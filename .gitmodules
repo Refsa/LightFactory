@@ -1,0 +1,12 @@
+[submodule "Assets/Modules/ReInput"]
+	path = Assets/Modules/ReInput
+	url = https://github.com/Refsa/ReInput.git
+[submodule "Assets/Modules/EventBus"]
+	path = Assets/Modules/EventBus
+	url = https://github.com/Refsa/EventBus
+[submodule "Assets/Modules/AutoBind"]
+	path = Assets/Modules/AutoBind
+	url = https://github.com/Refsa/Unity_AutoBind.git
+[submodule "Assets/Modules/ReTag"]
+	path = Assets/Modules/ReTag
+	url = https://github.com/Refsa/ReTag.git
