@@ -17,8 +17,6 @@ public class LightPacket
         Done,
     }
 
-    const float distancePerTick = 1f;
-
     GameObject visual;
     Vector3 position;
     Vector3 next;
@@ -26,6 +24,7 @@ public class LightPacket
 
     public int NextIndex => nextIndex;
     public Vector3 Next => next;
+    public Vector3 Position => position;
     public GameObject Visual => visual;
 
     public LightPacket Setup(GameObject visual, Vector3 previous, Vector3 next, int nextIndex)
@@ -44,10 +43,16 @@ public class LightPacket
         this.nextIndex = nextIndex;
     }
 
+    public void SetPosition(Vector3 pos)
+    {
+        this.position = pos;
+        visual.transform.position = this.position;
+    }
+
     public State Tick()
     {
         float distanceLeft = Vector3.Distance(position, next);
-        float distanceToMove = Mathf.Min(distancePerTick, distanceLeft);
+        float distanceToMove = Mathf.Min(GameConstants.LightPacketSpeed, distanceLeft);
         position = Vector3.MoveTowards(position, next, distanceToMove);
 
         visual.transform.position = position;

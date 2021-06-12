@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Refsa.EventBus;
 using UnityEngine;
 
@@ -48,11 +49,15 @@ public class LaserSource : MonoBehaviour, ITicker
 
     List<Vector3> vertices;
     HashSet<GameObject> laserHits;
+    HashSet<LaserCollector> collectors;
+    HashSet<Vector3> oldVertices;
 
     int lastSendTick;
     List<LightPacket> packetsInTransport;
 
     int solidLayerMask;
+
+    public int TickerPriority => TickerPriorities.LASER_SOURCE;
 
     void Start()
     {
@@ -61,6 +66,8 @@ public class LaserSource : MonoBehaviour, ITicker
         packetsInTransport = new List<LightPacket>();
         laserHits = new HashSet<GameObject>();
         vertices = new List<Vector3>();
+        oldVertices = new HashSet<Vector3>();
+        collectors = new HashSet<LaserCollector>();
         camera = Camera.main;
 
         oldPosition = transform.position;
@@ -88,21 +95,15 @@ public class LaserSource : MonoBehaviour, ITicker
     {
         bool updateLaser = false;
 
-        /* for (int i = 0; i < vertices.Count - 1; i++)
+        if (updateLaser || oldPosition != transform.position || oldRotation != transform.rotation)
         {
-            Vector2 dir = (vertices[i + 1] - vertices[i]);
-            var hit = Physics2D.Raycast(vertices[i], dir.normalized, dir.magnitude, solidLayerMask);
-            if (hit.collider != null && !laserHits.Contains(hit.collider.gameObject))
-            {
-                updateLaser = true;
-                break;
-            }
-        } */
+            ClearLightPackets();
+        }
 
-        // if (updateLaser || oldPosition != transform.position || oldRotation != transform.rotation)
         {
             TraceLaser();
             PushLineDrawerData();
+            CorrectPackets();
         }
 
         oldPosition = transform.position;
@@ -111,6 +112,10 @@ public class LaserSource : MonoBehaviour, ITicker
 
     void TraceLaser()
     {
+        oldVertices.Clear();
+        foreach (var vert in vertices.Skip(1).Take(vertices.Count - 2)) oldVertices.Add(vert);
+
+        collectors.Clear();
         laserHits.Clear();
         vertices.Clear();
 
@@ -125,15 +130,32 @@ public class LaserSource : MonoBehaviour, ITicker
         while (distanceLeft >= 0f && iterations < 10)
         {
             var hit = Physics2D.Raycast(currentPos + currentDir * 0.01f, currentDir, distanceLeft, solidLayerMask);
-            if (hit.collider != null && hit.collider.gameObject != gameObject)
+            var otherGO = hit.collider == null ? null : hit.collider.gameObject;
+
+            if (otherGO != null && otherGO != gameObject)
             {
-                laserHits.Add(hit.collider.gameObject);
+                laserHits.Add(otherGO);
                 currentPos = hit.point;
                 vertices.Add(currentPos);
-                if (hit.collider.gameObject.HasTag("Mirror"))
+
+                if (otherGO.HasTagInParent("Mirror"))
                 {
-                    currentDir = Vector2.Reflect(currentDir, hit.normal);
-                    distanceLeft -= hit.distance;
+                    if (hit.collider.GetComponentInParent<ILaserReflector>().TryReflect(currentDir, hit.normal, out var reflected))
+                    {
+                        currentDir = Vector2.Reflect(currentDir, hit.normal);
+                        distanceLeft -= hit.distance;
+                    }
+                    else
+                    {
+                        blocked = true;
+                        break;
+                    }
+                }
+                else if (otherGO.HasTagInParent("LaserCollector"))
+                {
+                    collectors.Add(otherGO.GetComponentInParent<LaserCollector>());
+                    blocked = true;
+                    break;
                 }
                 else
                 {
@@ -152,6 +174,35 @@ public class LaserSource : MonoBehaviour, ITicker
         {
             vertices.Add(currentPos + currentDir * distanceLeft);
         }
+
+        /* for (int i = 1; i < vertices.Count - 2; i++)
+        {
+            if (!oldVertices.Contains(vertices[i]))
+            {
+                ClearLightPackets();
+                break;
+            }
+        } */
+    }
+
+    void CorrectPackets()
+    {
+        for (int i = packetsInTransport.Count - 1; i >= 0; i--)
+        {
+            var packet = packetsInTransport[i];
+
+            if (packet.NextIndex >= vertices.Count)
+            {
+                FreeLightPacket(packet);
+                packetsInTransport.Remove(packet);
+            }
+            else if (packet.Next != vertices[packet.NextIndex])
+            {
+                packet.SetNext(vertices[packet.NextIndex], packet.NextIndex);
+                Vector2 pos = GetClosestPointOnLineSegment(vertices[packet.NextIndex - 1], packet.Next, packet.Position);
+                packet.SetPosition(pos);
+            }
+        }
     }
 
     void PushLineDrawerData()
@@ -166,7 +217,7 @@ public class LaserSource : MonoBehaviour, ITicker
 
     public void Tick(int tick)
     {
-        if (tick - lastSendTick == sendRate)
+        if (tick - lastSendTick >= sendRate)
         {
             var lightPacket = Pools.LightPacketPooler.Get()
                 .Setup(LightPacketVisualPool.Instance.Get(), vertices[0], vertices[1], 1);
@@ -178,27 +229,26 @@ public class LaserSource : MonoBehaviour, ITicker
             lastSendTick = tick;
         }
 
-        packetsInTransport.RemoveAll(e =>
-            e.NextIndex >= vertices.Count || e.Next != vertices[e.NextIndex]
-        );
-
         for (int i = packetsInTransport.Count - 1; i >= 0; i--)
         {
-            TickLightPacket(packetsInTransport[i], i);
+            var packet = packetsInTransport[i];
+            TickLightPacket(packet);
         }
     }
 
-    void TickLightPacket(LightPacket lightPacket, int index)
+    void TickLightPacket(LightPacket lightPacket)
     {
         var state = lightPacket.Tick();
         if (state != LightPacket.State.None)
         {
             if (lightPacket.NextIndex >= vertices.Count - 1)
             {
-                Pools.LightPacketPooler.Free(lightPacket);
-                LightPacketVisualPool.Instance.Free(lightPacket.Visual);
+                FreeLightPacket(lightPacket);
 
-                packetsInTransport.RemoveAt(index);
+                foreach (var collector in collectors)
+                {
+                    collector.Notify(color);
+                }
             }
             else
             {
@@ -207,9 +257,49 @@ public class LaserSource : MonoBehaviour, ITicker
 
                 if (state == LightPacket.State.More)
                 {
-                    TickLightPacket(lightPacket, index);
+                    TickLightPacket(lightPacket);
                 }
             }
+        }
+    }
+
+    void FreeLightPacket(LightPacket lightPacket)
+    {
+        Pools.LightPacketPooler.Free(lightPacket);
+        LightPacketVisualPool.Instance.Free(lightPacket.Visual);
+        packetsInTransport.Remove(lightPacket);
+    }
+
+    void ClearLightPackets()
+    {
+        for (int j = packetsInTransport.Count - 1; j >= 0; j--)
+        {
+            FreeLightPacket(packetsInTransport[j]);
+        }
+        packetsInTransport.Clear();
+    }
+
+    public static Vector2 GetClosestPointOnLineSegment(Vector2 A, Vector2 B, Vector2 P)
+    {
+        Vector2 AP = P - A;
+        Vector2 AB = B - A;
+
+        float magnitudeAB = AB.sqrMagnitude;
+        float ABAPproduct = Vector2.Dot(AP, AB);
+        float distance = ABAPproduct / magnitudeAB;
+
+        if (distance < 0)
+        {
+            return A;
+
+        }
+        else if (distance > 1)
+        {
+            return B;
+        }
+        else
+        {
+            return A + AB * distance;
         }
     }
 }

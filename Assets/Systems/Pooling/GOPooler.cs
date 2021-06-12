@@ -41,8 +41,6 @@ public abstract class GOPooler<T> : MonoBehaviour
             Expand(16);
         }
 
-        Debug.Log("Get");
-
         var go = pool.Dequeue();
         go.SetActive(true);
         return go;

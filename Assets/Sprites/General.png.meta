@@ -17,6 +17,18 @@ TextureImporter:
   - first:
       213: 4245935670168337686
     second: General_4
+  - first:
+      213: 232854747835183443
+    second: General_5
+  - first:
+      213: -2664751172987047288
+    second: General_6
+  - first:
+      213: 4154663363154342524
+    second: General_7
+  - first:
+      213: 5618972051590531670
+    second: General_8
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -214,7 +226,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -222,6 +234,90 @@ TextureImporter:
       bones: []
       spriteID: 61d3b8ffef79cea30800000000000000
       internalID: 4245935670168337686
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: General_5
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 288
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 351baf0d8244b3300800000000000000
+      internalID: 232854747835183443
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: General_6
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 288
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8823d473de6e40bd0800000000000000
+      internalID: -2664751172987047288
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: General_7
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 268
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c72f422015458a930800000000000000
+      internalID: 4154663363154342524
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: General_8
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 256
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 65ac6e17f499afd40800000000000000
+      internalID: 5618972051590531670
       vertices: []
       indices: 
       edges: []

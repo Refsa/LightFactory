@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Refsa.EventBus;
 using UnityEngine;
 
 public interface ITicker
 {
+    int TickerPriority { get; }
     void Tick(int tick);
 }
 
@@ -93,7 +95,7 @@ public class Tick : MonoBehaviour
                 yield return new WaitWhile(() => !active);
             }
 
-            foreach (var ticker in tickers)
+            foreach (var ticker in tickers.OrderBy(e => e.TickerPriority))
             {
                 ticker.Tick(currentTick);
             }
@@ -112,4 +114,11 @@ public class Tick : MonoBehaviour
     {
         tickers.Remove(obj.Ticker);
     }
+}
+
+
+public static class TickerPriorities
+{
+    public const int LASER_SOURCE = 0;
+    public const int LASER_COLLECTOR = 1;
 }
