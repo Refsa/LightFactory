@@ -7,16 +7,16 @@ using UnityEngine;
 public class LaserSource : MonoBehaviour, ITicker
 {
     static readonly Dictionary<Color, Gradient> LaserLineGradients = new Dictionary<Color, Gradient>();
-    static Gradient GetGradient(Color color)
+    static Gradient GetGradient(Color color, bool atMaxDistance)
     {
         if (!LaserLineGradients.TryGetValue(color, out var gradient))
         {
-            gradient = MakeGradient(color);
+            gradient = MakeGradient(color, atMaxDistance);
         }
 
         return gradient;
     }
-    static Gradient MakeGradient(Color color)
+    static Gradient MakeGradient(Color color, bool atMaxDistance)
     {
         var gradient = new Gradient();
 
@@ -29,11 +29,15 @@ public class LaserSource : MonoBehaviour, ITicker
         gradient.alphaKeys = new[]
         {
             new GradientAlphaKey(1f, 0f),
-            new GradientAlphaKey(1f, 0.8f),
-            new GradientAlphaKey(0f, 1f),
+            new GradientAlphaKey(1f, 0.999f),
+            new GradientAlphaKey(atMaxDistance ? 0f : 1f, 1f),
         };
 
         return gradient;
+    }
+    public static void ClearGradients()
+    {
+        if (LaserLineGradients != null) LaserLineGradients.Clear();
     }
 
     [SerializeField] Transform source;
@@ -49,8 +53,8 @@ public class LaserSource : MonoBehaviour, ITicker
 
     List<Vector3> vertices;
     HashSet<GameObject> laserHits;
-    HashSet<LaserCollector> collectors;
-    HashSet<Vector3> oldVertices;
+    HashSet<ILaserCollector> collectors;
+    float distanceNorm;
 
     int lastSendTick;
     List<LightPacket> packetsInTransport;
@@ -66,8 +70,7 @@ public class LaserSource : MonoBehaviour, ITicker
         packetsInTransport = new List<LightPacket>();
         laserHits = new HashSet<GameObject>();
         vertices = new List<Vector3>();
-        oldVertices = new HashSet<Vector3>();
-        collectors = new HashSet<LaserCollector>();
+        collectors = new HashSet<ILaserCollector>();
         camera = Camera.main;
 
         oldPosition = transform.position;
@@ -79,6 +82,8 @@ public class LaserSource : MonoBehaviour, ITicker
 
         TraceLaser();
         PushLineDrawerData();
+
+        OnEnable();
     }
 
     void OnEnable()
@@ -112,9 +117,6 @@ public class LaserSource : MonoBehaviour, ITicker
 
     void TraceLaser()
     {
-        oldVertices.Clear();
-        foreach (var vert in vertices.Skip(1).Take(vertices.Count - 2)) oldVertices.Add(vert);
-
         collectors.Clear();
         laserHits.Clear();
         vertices.Clear();
@@ -127,7 +129,7 @@ public class LaserSource : MonoBehaviour, ITicker
         int iterations = 0;
         bool blocked = false;
 
-        while (distanceLeft >= 0f && iterations < 10)
+        while (distanceLeft > 0f && iterations < 10)
         {
             var hit = Physics2D.Raycast(currentPos + currentDir * 0.01f, currentDir, distanceLeft, solidLayerMask);
             var otherGO = hit.collider == null ? null : hit.collider.gameObject;
@@ -153,7 +155,7 @@ public class LaserSource : MonoBehaviour, ITicker
                 }
                 else if (otherGO.HasTagInParent("LaserCollector"))
                 {
-                    collectors.Add(otherGO.GetComponentInParent<LaserCollector>());
+                    collectors.Add(otherGO.GetComponentInParent<ILaserCollector>());
                     blocked = true;
                     break;
                 }
@@ -173,16 +175,13 @@ public class LaserSource : MonoBehaviour, ITicker
         if (!blocked)
         {
             vertices.Add(currentPos + currentDir * distanceLeft);
+            distanceNorm = 0f;
+        }
+        else
+        {
+            distanceNorm = distanceLeft;
         }
 
-        /* for (int i = 1; i < vertices.Count - 2; i++)
-        {
-            if (!oldVertices.Contains(vertices[i]))
-            {
-                ClearLightPackets();
-                break;
-            }
-        } */
     }
 
     void CorrectPackets()
@@ -198,16 +197,22 @@ public class LaserSource : MonoBehaviour, ITicker
             }
             else if (packet.Next != vertices[packet.NextIndex])
             {
-                packet.SetNext(vertices[packet.NextIndex], packet.NextIndex);
-                Vector2 pos = GetClosestPointOnLineSegment(vertices[packet.NextIndex - 1], packet.Next, packet.Position);
-                packet.SetPosition(pos);
+                /* packet.SetNext(vertices[packet.NextIndex], packet.NextIndex);
+                Vector2 pos = MathHelpersGetClosestPointOnLineSegment(vertices[packet.NextIndex - 1], packet.Next, packet.Position);
+                packet.SetPosition(pos); */
+                FreeLightPacket(packet);
+                packetsInTransport.Remove(packet);
+            }
+            else
+            {
+                packet.Update();
             }
         }
     }
 
     void PushLineDrawerData()
     {
-        laserRenderer.colorGradient = GetGradient(color);
+        laserRenderer.colorGradient = GetGradient(color, distanceNorm < 0.5f);
         laserRenderer.positionCount = vertices.Count;
         for (int i = 0; i < vertices.Count; i++)
         {
@@ -217,15 +222,9 @@ public class LaserSource : MonoBehaviour, ITicker
 
     public void Tick(int tick)
     {
-        if (tick - lastSendTick >= sendRate)
+        if (sendRate != -1 && tick - lastSendTick >= sendRate)
         {
-            var lightPacket = Pools.LightPacketPooler.Get()
-                .Setup(LightPacketVisualPool.Instance.Get(), vertices[0], vertices[1], 1);
-
-            lightPacket.Visual.GetComponent<LightPacketVisual>().SetColor(color);
-
-            packetsInTransport.Add(lightPacket);
-
+            NewPacket();
             lastSendTick = tick;
         }
 
@@ -234,6 +233,16 @@ public class LaserSource : MonoBehaviour, ITicker
             var packet = packetsInTransport[i];
             TickLightPacket(packet);
         }
+    }
+
+    public void NewPacket()
+    {
+        var lightPacket = Pools.LightPacketPooler.Get()
+                .Setup(LightPacketVisualPool.Instance.Get(), vertices[0], vertices[1], 1);
+
+        lightPacket.Visual.GetComponent<LightPacketVisual>().SetColor(color);
+
+        packetsInTransport.Add(lightPacket);
     }
 
     void TickLightPacket(LightPacket lightPacket)
@@ -265,9 +274,10 @@ public class LaserSource : MonoBehaviour, ITicker
 
     void FreeLightPacket(LightPacket lightPacket)
     {
+        packetsInTransport.Remove(lightPacket);
+
         Pools.LightPacketPooler.Free(lightPacket);
         LightPacketVisualPool.Instance.Free(lightPacket.Visual);
-        packetsInTransport.Remove(lightPacket);
     }
 
     void ClearLightPackets()
@@ -279,27 +289,21 @@ public class LaserSource : MonoBehaviour, ITicker
         packetsInTransport.Clear();
     }
 
-    public static Vector2 GetClosestPointOnLineSegment(Vector2 A, Vector2 B, Vector2 P)
+    public void SetColor(Color color)
     {
-        Vector2 AP = P - A;
-        Vector2 AB = B - A;
+        this.color = color;
+    }
 
-        float magnitudeAB = AB.sqrMagnitude;
-        float ABAPproduct = Vector2.Dot(AP, AB);
-        float distance = ABAPproduct / magnitudeAB;
+    public void Enable()
+    {
+        laserRenderer.enabled = true;
+        enabled = true;
+    }
 
-        if (distance < 0)
-        {
-            return A;
-
-        }
-        else if (distance > 1)
-        {
-            return B;
-        }
-        else
-        {
-            return A + AB * distance;
-        }
+    public void Disable()
+    {
+        laserRenderer.enabled = false;
+        enabled = false;
+        ClearLightPackets();
     }
 }

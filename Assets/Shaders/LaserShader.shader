@@ -3,12 +3,11 @@ Shader "Unlit/LaserShader"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _Color ("Color", Color) = (1,1,1,1)
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
-        LOD 100
+        Tags { "RenderType"="Transparent" "Queue"="Transparent" }
+        Blend SrcAlpha OneMinusSrcAlpha
 
         Pass
         {
@@ -46,9 +45,9 @@ Shader "Unlit/LaserShader"
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            float4 frag (v2f i) : SV_Target
             {
-                fixed4 col = tex2D(_MainTex, i.uv) * i.color;
+                float4 col = float4(tex2D(_MainTex, i.uv).rgb * i.color.rgb, i.color.a);
                 return col;
             }
             ENDCG

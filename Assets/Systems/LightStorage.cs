@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LaserCollector : MonoBehaviour, ITicker
+public class LightStorage : MonoBehaviour, ITicker, ILaserCollector
 {
     public int TickerPriority => TickerPriorities.LASER_COLLECTOR;
 
     [SerializeField] int _storage;
+    [SerializeField] Color _color;
     [SerializeField] SpriteRenderer collectorPoint;
 
     Color activeColor;
@@ -14,7 +15,7 @@ public class LaserCollector : MonoBehaviour, ITicker
 
     public void Tick(int tick)
     {
-        
+
     }
 
     public void Notify(Color color)
@@ -34,5 +35,6 @@ public class LaserCollector : MonoBehaviour, ITicker
 
         storage++;
         _storage = storage;
+        _color = color;
     }
 }

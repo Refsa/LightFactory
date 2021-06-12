@@ -21,6 +21,7 @@ public class LightPacket
     Vector3 position;
     Vector3 next;
     int nextIndex;
+    Vector3 nextPartial;
 
     public int NextIndex => nextIndex;
     public Vector3 Next => next;
@@ -34,7 +35,17 @@ public class LightPacket
         this.position = previous;
         this.nextIndex = nextIndex;
 
+        visual.transform.position = position;
+
         return this;
+    }
+
+    public void Clear()
+    {
+        this.visual = null;
+        this.next = Vector3.zero;
+        this.position = Vector3.zero;
+        this.nextIndex = 0;
     }
 
     public void SetNext(Vector3 next, int nextIndex)
@@ -57,6 +68,8 @@ public class LightPacket
 
         visual.transform.position = position;
 
+        nextPartial = Vector3.MoveTowards(position, next, distanceToMove);
+
         distanceLeft -= distanceToMove;
         if (distanceLeft < 0f)
         {
@@ -68,5 +81,14 @@ public class LightPacket
         }
 
         return State.None;
+    }
+
+    public void Update()
+    {
+        visual.transform.position = Vector3.Lerp(
+            visual.transform.position,
+            nextPartial,
+            Mathf.SmoothStep(0f, 1f, Mathf.Pow(Time.deltaTime, GameConstants.LightPacketSpeed))
+        );
     }
 }

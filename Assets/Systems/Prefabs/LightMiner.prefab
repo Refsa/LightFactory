@@ -67,7 +67,7 @@ MonoBehaviour:
   laserRenderer: {fileID: 4928007084739390312}
   maxDistance: 20
   sendRate: 6
-  color: {r: 0.14285529, g: 1, b: 0, a: 1}
+  color: {r: 0, g: 1, b: 0, a: 1}
 --- !u!58 &4928007083772035400
 CircleCollider2D:
   m_ObjectHideFlags: 0

@@ -31,6 +31,7 @@ public struct UnregisterTicker : IMessage
     }
 }
 
+[DefaultExecutionOrder(-1000)]
 public class Tick : MonoBehaviour
 {
     static Tick instance;
@@ -59,13 +60,13 @@ public class Tick : MonoBehaviour
         GlobalEventBus.Bus.Sub<UnregisterTicker>(OnUnregisterTicker);
 
         active = true;
-        tickRoutine = StartCoroutine(TickTask());
+
+        OnEnable();
     }
 
     void OnEnable()
     {
         currentTick = 0;
-
         if (tickRoutine == null)
         {
             tickRoutine = StartCoroutine(TickTask());
@@ -121,4 +122,5 @@ public static class TickerPriorities
 {
     public const int LASER_SOURCE = 0;
     public const int LASER_COLLECTOR = 1;
+    public const int LIGHT_COMBINER = 2;
 }
