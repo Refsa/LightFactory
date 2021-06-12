@@ -176,7 +176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa6b3a829b5517a4a8afd7d820e68454, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  snap: 22.5
+  snap: 11.25
   precisionScale: 0.25
 --- !u!1 &471146116152881787
 GameObject:
@@ -307,5 +307,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34ad2eb74ab31374db724e329075d0e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  snap: 1
-  precisionScale: 0.25
+  snap: 0.5
+  precisionScale: 0.2

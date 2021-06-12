@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Refsa.EventBus;
 using UnityEngine;
 
 public class TransformHandle : MonoBehaviour
@@ -9,8 +11,58 @@ public class TransformHandle : MonoBehaviour
 
     public bool Active => positionHandle.Active || rotationHandle.Active;
 
+    GameObject selected;
     GameObject rotateable;
     GameObject movable;
+
+    void Awake()
+    {
+        GlobalEventBus.Bus.Sub<SelectionChanged>(OnSelectionChanged);
+        gameObject.SetActive(false);
+
+        positionHandle.mouseEntered += () => GlobalEventBus.Bus.Pub(new SelectionLock(true));
+        rotationHandle.mouseEntered += () => GlobalEventBus.Bus.Pub(new SelectionLock(true));
+
+        positionHandle.mouseLeft += () => GlobalEventBus.Bus.Pub(new SelectionLock(false));
+        rotationHandle.mouseLeft += () => GlobalEventBus.Bus.Pub(new SelectionLock(false));
+    }
+
+    void Update()
+    {
+        if (selected == null) return;
+
+        transform.position = selected.transform.position;
+        if (movable != null)
+        {
+            positionHandle.SetData(movable);
+            positionHandle.Handle(movable);
+        }
+
+        if (rotateable != null)
+        {
+            rotationHandle.SetData(rotateable);
+            rotationHandle.Handle(rotateable);
+        }
+    }
+
+    private void OnSelectionChanged(SelectionChanged obj)
+    {
+        if (obj.HasSelection)
+        {
+            selected = obj.Target;
+            SetData(selected);
+            gameObject.SetActive(true);
+        }
+        else
+        {
+            selected = null;
+            movable = null;
+            rotateable = null;
+            gameObject.SetActive(false);
+
+            GlobalEventBus.Bus.Pub(new TransformHandleStatus(false));
+        }
+    }
 
     public void SetData(GameObject targetObject)
     {
@@ -40,25 +92,35 @@ public class TransformHandle : MonoBehaviour
             rotateable = null;
         }
 
-        positionHandle.SetData(movable);
-        rotationHandle.SetData(rotateable);
-
-        rotationHandle.gameObject.SetActive(rotateable != null);
         positionHandle.gameObject.SetActive(movable != null);
-    }
+        rotationHandle.gameObject.SetActive(rotateable != null);
 
-    public void Tick()
-    {
         if (movable != null)
         {
             positionHandle.SetData(movable);
-            positionHandle.Handle(movable);
         }
-
         if (rotateable != null)
         {
             rotationHandle.SetData(rotateable);
-            rotationHandle.Handle(rotateable);
         }
+
+        if (movable == null && rotateable == null)
+        {
+            GlobalEventBus.Bus.Pub(new TransformHandleStatus(false));
+        }
+        else
+        {
+            GlobalEventBus.Bus.Pub(new TransformHandleStatus(true));
+        }
+    }
+}
+
+public struct TransformHandleStatus : IMessage
+{
+    public bool State;
+
+    public TransformHandleStatus(bool state)
+    {
+        State = state;
     }
 }

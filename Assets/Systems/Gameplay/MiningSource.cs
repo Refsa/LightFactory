@@ -36,6 +36,7 @@ public class MiningSource : MonoBehaviour, ITicker
             resources[i] = GameObject.Instantiate(resourcePrefab, transform).GetComponent<MiningResource>();
 
             resources[i].transform.up = Quaternion.Euler(0f, 0f, theta) * Vector3.up;
+            resources[i].transform.position += resources[i].transform.up * 0.25f;
 
             resources[i].Randomize(color);
 

@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a55195c1b1c49a84ab636de5ccfb0917, type: 3}
+  m_Name: LightStorage
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 4223830390850918367, guid: 64c26153b1957b6468d8613012005555, type: 3}
+  icon: {fileID: 4245935670168337686, guid: 446e057d55b3a6941a91dee7c06fcd21, type: 3}
+  tooltip: Can store light to later be released

@@ -29,8 +29,8 @@ public class PositionHandle : Handle
 
     public void SetData(GameObject targetObject)
     {
-        // offset = targetObject.transform.localScale.y * -0.6f;
         offset = 0f;
+        transform.localScale = targetObject.transform.localScale * 0.25f;
     }
 
     public void Handle(GameObject targetObject)

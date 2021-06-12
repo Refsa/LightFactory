@@ -21,7 +21,7 @@ Material:
     m_TexEnvs: []
     m_Floats:
     - _PrimaryGridScale: 1
-    - _SecondaryGridScale: 0.25
+    - _SecondaryGridScale: 0.1
     m_Colors:
     - _Color: {r: 0.32059777, g: 0.2552065, b: 0.3490566, a: 1}
     - _PrimaryColor: {r: 0.7196685, g: 0.6205525, b: 0.78, a: 1}

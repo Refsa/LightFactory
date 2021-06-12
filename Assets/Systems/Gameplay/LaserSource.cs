@@ -102,6 +102,8 @@ public class LaserSource : MonoBehaviour, ITicker
     void OnEnable()
     {
         GlobalEventBus.Bus.Pub(new RegisterTicker(this));
+
+        laserHits = new HashSet<GameObject>();
     }
 
     void OnDisable()

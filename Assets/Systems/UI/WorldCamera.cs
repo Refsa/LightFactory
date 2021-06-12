@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class WorldCamera : MonoBehaviour
 {
+    static WorldCamera instance;
+    public static WorldCamera Instance => instance;
+
     [SerializeField] float panSpeed = 0.025f;
     [SerializeField, Range(0f, 1f)] float panSmooth = 0.5f;
 
@@ -20,8 +23,19 @@ public class WorldCamera : MonoBehaviour
     float targetZoom;
     float lastScrollY;
 
+    Vector2 mouseInWorld;
+
+    public Vector2 MouseInWorld => mouseInWorld;
+
     void Awake()
     {
+        if (instance != null)
+        {
+            Destroy(this);
+            return;
+        }
+
+        instance = this;
         targetZoom = camera.orthographicSize;
     }
 
@@ -68,7 +82,7 @@ public class WorldCamera : MonoBehaviour
                     {
                         targetZoom -= zoomSpeed * camera.orthographicSize;
                     }
-                    
+
                     targetZoom = Mathf.Clamp(targetZoom, minMaxZoom.x, minMaxZoom.y);
                 }
             }
@@ -79,5 +93,7 @@ public class WorldCamera : MonoBehaviour
                 Mathf.Lerp(camera.orthographicSize, targetZoom, Mathf.Pow(Time.deltaTime, zoomSmooth));
             camera.orthographicSize = Mathf.Clamp(camera.orthographicSize, minMaxZoom.x, minMaxZoom.y);
         }
+
+        mouseInWorld = camera.ScreenToWorldPoint(Input.mousePosition);
     }
 }

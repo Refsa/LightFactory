@@ -1,15 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Refsa.EventBus;
 using UnityEngine;
 
 public class Selection : MonoBehaviour
 {
-    [SerializeField] GameObject transformHandlePrefab;
-    [SerializeField] GameObject grid;
-
     int targetLayerMask;
     GameObject selectedGameObject;
-    TransformHandle transformHandle;
+    bool selectionLocked;
 
     [AutoBind] new Camera camera;
 
@@ -17,13 +16,18 @@ public class Selection : MonoBehaviour
     {
         targetLayerMask = 1 << LayerMask.NameToLayer("Solid");
 
-        transformHandle = GameObject.Instantiate(transformHandlePrefab).GetComponent<TransformHandle>();
-        transformHandle.gameObject.SetActive(false);
+        GlobalEventBus.Bus.Sub<SelectionLock>(OnSelectionLock);
+    }
+
+    private void OnSelectionLock(SelectionLock obj)
+    {
+        selectionLocked = obj.Lock;
     }
 
     void Update()
     {
         bool hadSelection = selectedGameObject != null;
+        bool selectionChanged = false;
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
@@ -36,36 +40,55 @@ public class Selection : MonoBehaviour
             {
                 if (!hadSelection || selectedGameObject != hit.gameObject)
                 {
-                    transformHandle.SetData(hit.gameObject);
+                    selectionChanged = true;
                 }
                 selectedGameObject = hit.gameObject;
 
             }
-            else if (!transformHandle.gameObject.activeSelf || !transformHandle.Active)
+            else if (!selectionLocked)
             {
                 selectedGameObject = null;
+                selectionChanged = true;
             }
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             selectedGameObject = null;
+            selectionChanged = true;
         }
 
-        if (selectedGameObject != null)
+        if (selectionChanged)
         {
-            transformHandle.gameObject.SetActive(true);
-            grid.gameObject.SetActive(true);
-
-            grid.transform.position = selectedGameObject.transform.position + Vector3.forward * 20f;
-
-            transformHandle.transform.position = selectedGameObject.transform.position;
-            transformHandle.Tick();
+            if (selectedGameObject == null)
+            {
+                GlobalEventBus.Bus.Pub(new SelectionChanged(null));
+            }
+            else
+            {
+                GlobalEventBus.Bus.Pub(new SelectionChanged(selectedGameObject));
+            }
         }
-        else
-        {
-            transformHandle.gameObject.SetActive(false);
-            grid.gameObject.SetActive(false);
-        }
+    }
+}
+
+public struct SelectionChanged : IMessage
+{
+    public GameObject Target;
+    public bool HasSelection => Target != null;
+
+    public SelectionChanged(GameObject target)
+    {
+        Target = target;
+    }
+}
+
+public struct SelectionLock : IMessage
+{
+    public bool Lock;
+
+    public SelectionLock(bool @lock)
+    {
+        Lock = @lock;
     }
 }
