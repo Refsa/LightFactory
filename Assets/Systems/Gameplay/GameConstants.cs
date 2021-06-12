@@ -51,4 +51,21 @@ public static class GameConstants
 
         return -1;
     }
+
+    public static Color IDToColor(int id)
+    {
+        if (id > 5) return Color.white;
+
+        switch (id)
+        {
+            case 0: return Color.red;
+            case 1: return Color.blue;
+            case 2: return Color.green;
+            case 3: return Color.yellow;
+            case 4: return Color.magenta;
+            case 5: return Color.cyan;
+        }
+
+        return Color.white;
+    }
 }

@@ -4,10 +4,23 @@ using System.Linq;
 using Refsa.EventBus;
 using UnityEngine;
 
+public class Connection
+{
+    public LaserSource Src;
+    public ILaserCollector Dest;
+    public int LastConnectionTime;
+
+    public Connection(LaserSource src, ILaserCollector dest)
+    {
+        Src = src;
+        Dest = dest;
+    }
+}
+
 public class LaserSource : MonoBehaviour, ITicker
 {
     static readonly Dictionary<Color, Gradient> LaserLineGradients = new Dictionary<Color, Gradient>();
-    static Gradient GetGradient(Color color, bool atMaxDistance)
+    public static Gradient GetGradient(Color color, bool atMaxDistance)
     {
         if (!LaserLineGradients.TryGetValue(color, out var gradient))
         {
@@ -53,7 +66,7 @@ public class LaserSource : MonoBehaviour, ITicker
 
     List<Vector3> vertices;
     HashSet<GameObject> laserHits;
-    HashSet<ILaserCollector> collectors;
+    Dictionary<ILaserCollector, Connection> connections;
     float distanceNorm;
 
     int lastSendTick;
@@ -70,7 +83,7 @@ public class LaserSource : MonoBehaviour, ITicker
         packetsInTransport = new List<LightPacket>();
         laserHits = new HashSet<GameObject>();
         vertices = new List<Vector3>();
-        collectors = new HashSet<ILaserCollector>();
+        connections = new Dictionary<ILaserCollector, Connection>();
         camera = Camera.main;
 
         oldPosition = transform.position;
@@ -117,7 +130,6 @@ public class LaserSource : MonoBehaviour, ITicker
 
     void TraceLaser()
     {
-        collectors.Clear();
         laserHits.Clear();
         vertices.Clear();
 
@@ -155,7 +167,13 @@ public class LaserSource : MonoBehaviour, ITicker
                 }
                 else if (otherGO.HasTag("LaserCollector"))
                 {
-                    collectors.Add(otherGO.GetComponentInParent<ILaserCollector>());
+                    var collector = otherGO.GetComponentInParent<ILaserCollector>();
+                    if (!connections.TryGetValue(collector, out var conn))
+                    {
+                        conn = new Connection(this, collector);
+                        collector.NotifyConnected(conn);
+                    }
+                    conn.LastConnectionTime = Time.frameCount;
                     blocked = true;
                     break;
                 }
@@ -170,6 +188,16 @@ public class LaserSource : MonoBehaviour, ITicker
                 break;
             }
             iterations++;
+        }
+
+        for (int i = connections.Count - 1; i >= 0; i--)
+        {
+            var kvp = connections.ElementAt(i);
+            if (kvp.Value.LastConnectionTime != Time.frameCount)
+            {
+                connections.Remove(kvp.Key);
+                kvp.Key.NotifyDisconnected(kvp.Value);
+            }
         }
 
         if (!blocked)
@@ -224,7 +252,7 @@ public class LaserSource : MonoBehaviour, ITicker
     {
         if (sendRate != -1 && tick - lastSendTick >= sendRate)
         {
-            if (collectors.Count > 0)
+            if (connections.Count > 0)
             {
                 NewPacket();
             }
@@ -257,9 +285,9 @@ public class LaserSource : MonoBehaviour, ITicker
             {
                 FreeLightPacket(lightPacket);
 
-                foreach (var collector in collectors)
+                foreach (var collector in connections)
                 {
-                    collector.Notify(color);
+                    collector.Value.Dest.Notify(color);
                 }
             }
             else
@@ -295,6 +323,16 @@ public class LaserSource : MonoBehaviour, ITicker
     public void SetColor(Color color)
     {
         this.color = color;
+    }
+
+    public void SetRange(float range)
+    {
+        this.maxDistance = range;
+    }
+
+    public void SetRate(int rate)
+    {
+        this.sendRate = rate;
     }
 
     public void Enable()

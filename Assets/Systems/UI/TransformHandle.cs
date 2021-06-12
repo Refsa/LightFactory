@@ -40,11 +40,11 @@ public class TransformHandle : MonoBehaviour
             rotateable = null;
         }
 
+        positionHandle.SetData(movable);
+        rotationHandle.SetData(rotateable);
+
         rotationHandle.gameObject.SetActive(rotateable != null);
         positionHandle.gameObject.SetActive(movable != null);
-
-        positionHandle.SetData(movable);
-        rotationHandle.GetData(rotateable);
     }
 
     public void Tick()
@@ -52,22 +52,13 @@ public class TransformHandle : MonoBehaviour
         if (movable != null)
         {
             positionHandle.SetData(movable);
-            if (positionHandle.Active)
-            {
-                movable.transform.position += positionHandle.Value.ToVector3();
-            }
+            positionHandle.Handle(movable);
         }
 
         if (rotateable != null)
         {
-            if (rotationHandle.Active)
-            {
-                rotateable.transform.rotation = Quaternion.Euler(0f, 0f, 90f) * Quaternion.FromToRotation(Vector3.up, rotationHandle.Value.ToVector3());
-            }
-            else
-            {
-                rotationHandle.GetData(rotateable);
-            }
+            rotationHandle.SetData(rotateable);
+            rotationHandle.Handle(rotateable);
         }
     }
 }

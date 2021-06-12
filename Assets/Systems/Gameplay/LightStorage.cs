@@ -37,4 +37,14 @@ public class LightStorage : MonoBehaviour, ITicker, ILaserCollector
         _storage = storage;
         _color = color;
     }
+
+    public void NotifyConnected(Connection connection)
+    {
+        
+    }
+
+    public void NotifyDisconnected(Connection connection)
+    {
+        
+    }
 }

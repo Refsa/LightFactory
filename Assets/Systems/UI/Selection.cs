@@ -5,6 +5,7 @@ using UnityEngine;
 public class Selection : MonoBehaviour
 {
     [SerializeField] GameObject transformHandlePrefab;
+    [SerializeField] GameObject grid;
 
     int targetLayerMask;
     GameObject selectedGameObject;
@@ -33,11 +34,12 @@ public class Selection : MonoBehaviour
 
             if (hit != null && (hit.gameObject.HasTagInParent("Selectable") || hit.gameObject.HasTag("Selectable")))
             {
-                selectedGameObject = hit.gameObject;
-                if (!hadSelection)
+                if (!hadSelection || selectedGameObject != hit.gameObject)
                 {
-                    transformHandle.SetData(selectedGameObject);
+                    transformHandle.SetData(hit.gameObject);
                 }
+                selectedGameObject = hit.gameObject;
+
             }
             else if (!transformHandle.gameObject.activeSelf || !transformHandle.Active)
             {
@@ -53,6 +55,9 @@ public class Selection : MonoBehaviour
         if (selectedGameObject != null)
         {
             transformHandle.gameObject.SetActive(true);
+            grid.gameObject.SetActive(true);
+
+            grid.transform.position = selectedGameObject.transform.position + Vector3.forward * 20f;
 
             transformHandle.transform.position = selectedGameObject.transform.position;
             transformHandle.Tick();
@@ -60,6 +65,7 @@ public class Selection : MonoBehaviour
         else
         {
             transformHandle.gameObject.SetActive(false);
+            grid.gameObject.SetActive(false);
         }
     }
 }

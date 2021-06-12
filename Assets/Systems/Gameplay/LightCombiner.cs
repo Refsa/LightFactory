@@ -48,6 +48,11 @@ public class LightCombiner : MonoBehaviour, ITicker, ILaserCollector
         colorStorage[GameConstants.ColorToID(color)]++;
     }
 
+    public void NotifyConnected(GameObject source)
+    {
+        
+    }
+
     public void Tick(int tick)
     {
         if (activeColors.Count < collectorCount)
@@ -88,5 +93,15 @@ public class LightCombiner : MonoBehaviour, ITicker, ILaserCollector
                 laserSource.Tick(tick);
             }
         }
+    }
+
+    public void NotifyConnected(Connection connection)
+    {
+        
+    }
+
+    public void NotifyDisconnected(Connection connection)
+    {
+        
     }
 }
