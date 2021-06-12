@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using Refsa.EventBus;
 using UnityEngine;
 
 public class WorldCamera : MonoBehaviour
@@ -22,6 +23,7 @@ public class WorldCamera : MonoBehaviour
 
     float targetZoom;
     float lastScrollY;
+    float lastCameraOrthoSizeChange;
 
     Vector2 mouseInWorld;
 
@@ -87,13 +89,41 @@ public class WorldCamera : MonoBehaviour
                 }
             }
 
-            lastScrollY = scrollDelta.y;
-
+            float lastOrthoSize = camera.orthographicSize;
             camera.orthographicSize =
                 Mathf.Lerp(camera.orthographicSize, targetZoom, Mathf.Pow(Time.deltaTime, zoomSmooth));
             camera.orthographicSize = Mathf.Clamp(camera.orthographicSize, minMaxZoom.x, minMaxZoom.y);
+
+            float cameraOrthoChange = lastOrthoSize - camera.orthographicSize;
+            // if (cameraOrthoChange == 0f && lastCameraOrthoSizeChange != 0f)
+            {
+                GlobalEventBus.Bus.Pub(new CameraZoomChanged(camera));
+            }
+
+            lastScrollY = scrollDelta.y;
+            lastCameraOrthoSizeChange = cameraOrthoChange;
         }
 
         mouseInWorld = camera.ScreenToWorldPoint(Input.mousePosition);
+    }
+}
+
+public struct CameraZoomChanged : IMessage
+{
+    public readonly Camera Camera;
+
+    public CameraZoomChanged(Camera camera)
+    {
+        Camera = camera;
+    }
+}
+
+public struct CameraMoved : IMessage
+{
+    public readonly Camera Camera;
+
+    public CameraMoved(Camera camera)
+    {
+        Camera = camera;
     }
 }

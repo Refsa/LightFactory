@@ -5,6 +5,12 @@ public static class GameConstants
 {
     public const float LightPacketSpeed = 0.25f;
 
+    public const float GridMajorSnap = 0.5f;
+    public const float GridMinorSnap = 0.1f;
+
+    public const float RotationMajorSnap = 11.25f;
+    public const float RotationMinorSnap = 2.8125f;
+
     public static int ColorToID(Color color)
     {
         bool hasRed = color.r > 0f;

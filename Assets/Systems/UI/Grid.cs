@@ -11,7 +11,21 @@ public class Grid : MonoBehaviour
         GlobalEventBus.Bus.Sub<TransformHandleStatus>(OnTransformHandleStatus);
         GlobalEventBus.Bus.Sub<SelectionChanged>(OnSelectionChanged);
 
+        GlobalEventBus.Bus.Sub<GridEnable>(OnGridEnable);
+        GlobalEventBus.Bus.Sub<GridDisable>(OnGridDisable);
+
         gameObject.SetActive(false);
+    }
+
+    private void OnGridDisable(GridDisable obj)
+    {
+        this.gameObject.SetActive(false);
+    }
+
+    private void OnGridEnable(GridEnable obj)
+    {
+        targetObject = obj.Target;
+        this.gameObject.SetActive(true);
     }
 
     private void OnSelectionChanged(SelectionChanged obj)
@@ -30,4 +44,19 @@ public class Grid : MonoBehaviour
 
         transform.position = targetObject.transform.position + Vector3.forward * 20f;
     }
+}
+
+public struct GridEnable : IMessage
+{
+    public readonly GameObject Target;
+
+    public GridEnable(GameObject target)
+    {
+        Target = target;
+    }
+}
+
+public struct GridDisable : IMessage
+{
+
 }

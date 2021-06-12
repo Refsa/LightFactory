@@ -5,26 +5,31 @@ using UnityEngine;
 
 public class PositionHandle : Handle
 {
-    [SerializeField] float snap = 1f;
-    [SerializeField] float precisionScale = 0.25f;
-
     float offset = -0.25f;
-
     Vector2 moveTotal;
 
     protected override Vector3 defaultPosition => transform.parent.position + transform.parent.up * offset;
-    public override Vector2 Value
+
+    void OnEnable()
     {
-        get
-        {
-            return dragDelta;
-        }
+        mouseDragging += OnDragging;
+        mouseLeft += Reset;
     }
 
-    void Awake()
+    void OnDisable()
     {
-        mouseDragging += val => moveTotal += val;
-        mouseLeft += () => moveTotal = Vector2.zero;
+        mouseDragging -= OnDragging;
+        mouseLeft -= Reset;
+    }
+
+    void OnDragging(Vector2 delta)
+    {
+        moveTotal += delta;
+    }
+
+    void Reset()
+    {
+        moveTotal = Vector2.zero;
     }
 
     public void SetData(GameObject targetObject)
@@ -35,12 +40,13 @@ public class PositionHandle : Handle
 
     public void Handle(GameObject targetObject)
     {
+        Debug.Log(state);
         if (Dragging)
         {
-            float snap = this.snap;
+            float snap = GameConstants.GridMajorSnap;
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                snap *= precisionScale;
+                snap = GameConstants.GridMinorSnap;
             }
 
             float signX = Mathf.Sign(moveTotal.x);
@@ -51,12 +57,13 @@ public class PositionHandle : Handle
             move.y -= (Mathf.Abs(move.y) % snap) * signY;
             moveTotal -= move;
 
-            Vector3 pos = targetObject.transform.position + move.ToVector3();
-
-            pos.x = Mathf.Round(pos.x / snap) * snap;
-            pos.y = Mathf.Round(pos.y / snap) * snap;
+            Vector3 pos = (targetObject.transform.position + move.ToVector3()).Snap(snap);
 
             targetObject.transform.position = pos;
+        }
+        else
+        {
+            moveTotal = Vector2.zero;
         }
     }
 }

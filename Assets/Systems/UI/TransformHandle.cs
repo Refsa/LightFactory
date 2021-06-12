@@ -31,7 +31,8 @@ public class TransformHandle : MonoBehaviour
     {
         if (selected == null) return;
 
-        transform.position = selected.transform.position;
+        transform.position = selected.transform.position + Vector3.forward * -5f;
+
         if (movable != null)
         {
             positionHandle.SetData(movable);

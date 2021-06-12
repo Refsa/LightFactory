@@ -9,6 +9,7 @@ public class Selection : MonoBehaviour
     int targetLayerMask;
     GameObject selectedGameObject;
     bool selectionLocked;
+    bool selectionChanged;
 
     [AutoBind] new Camera camera;
 
@@ -17,17 +18,39 @@ public class Selection : MonoBehaviour
         targetLayerMask = 1 << LayerMask.NameToLayer("Solid");
 
         GlobalEventBus.Bus.Sub<SelectionLock>(OnSelectionLock);
+        GlobalEventBus.Bus.Sub<SelectionSet>(OnSelectionSet);
     }
 
-    private void OnSelectionLock(SelectionLock obj)
+    private void OnSelectionSet(SelectionSet obj)
+    {
+        selectedGameObject = obj.Target;
+
+        if (selectedGameObject != null)
+        {
+            if (!selectedGameObject.HasTag("Selectable") && !selectedGameObject.HasTagInParent("Selectable"))
+            {
+                selectedGameObject = null;
+            }
+        }
+
+        selectionChanged = true;
+    }
+
+    void OnSelectionLock(SelectionLock obj)
     {
         selectionLocked = obj.Lock;
     }
 
     void Update()
     {
+        if (selectionChanged)
+        {
+            GlobalEventBus.Bus.Pub(new SelectionChanged(selectedGameObject));
+            selectionChanged = false;
+            return;
+        }
+
         bool hadSelection = selectedGameObject != null;
-        bool selectionChanged = false;
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
@@ -36,7 +59,7 @@ public class Selection : MonoBehaviour
 
             var hit = Physics2D.OverlapCircle(mouseRay.origin, 0.25f, targetLayerMask);
 
-            if (hit != null && (hit.gameObject.HasTagInParent("Selectable") || hit.gameObject.HasTag("Selectable")))
+            if (hit != null && (hit.gameObject.HasTag("Selectable") || hit.gameObject.HasTagInParent("Selectable")))
             {
                 if (!hadSelection || selectedGameObject != hit.gameObject)
                 {
@@ -60,14 +83,8 @@ public class Selection : MonoBehaviour
 
         if (selectionChanged)
         {
-            if (selectedGameObject == null)
-            {
-                GlobalEventBus.Bus.Pub(new SelectionChanged(null));
-            }
-            else
-            {
-                GlobalEventBus.Bus.Pub(new SelectionChanged(selectedGameObject));
-            }
+            GlobalEventBus.Bus.Pub(new SelectionChanged(selectedGameObject));
+            selectionChanged = false;
         }
     }
 }
@@ -87,8 +104,18 @@ public struct SelectionLock : IMessage
 {
     public bool Lock;
 
-    public SelectionLock(bool @lock)
+    public SelectionLock(bool locked)
     {
-        Lock = @lock;
+        Lock = locked;
+    }
+}
+
+public struct SelectionSet : IMessage
+{
+    public readonly GameObject Target;
+
+    public SelectionSet(GameObject target)
+    {
+        this.Target = target;
     }
 }

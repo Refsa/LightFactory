@@ -11,7 +11,9 @@ public abstract class Handle : MonoBehaviour
         MouseHover,
     }
 
-    State state;
+    protected State state;
+    State previousState;
+
     Vector2 lastMousePosition;
     protected Vector2 dragDelta;
 
@@ -19,7 +21,6 @@ public abstract class Handle : MonoBehaviour
     bool wasPressedOnThis;
 
     protected abstract Vector3 defaultPosition { get; }
-    public abstract Vector2 Value { get; }
     public bool Active => state != State.None;
     public bool Dragging => state == State.MouseDrag;
 
@@ -52,10 +53,16 @@ public abstract class Handle : MonoBehaviour
             }
             else
             {
-                mouseLeft?.Invoke();
                 ResetState();
             }
         }
+
+        if (previousState != State.None && state == State.None)
+        {
+            mouseLeft?.Invoke();
+        }
+
+        previousState = state;
     }
 
     void OnMouseEnter()
@@ -69,7 +76,6 @@ public abstract class Handle : MonoBehaviour
             return;
         }
 
-        mouseLeft?.Invoke();
         ResetState();
     }
     void OnMouseOver()
@@ -79,7 +85,7 @@ public abstract class Handle : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             wasPressedOnThis = true;
-            lastMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition); ;
+            lastMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         }
 
         bool isDown = Input.GetKey(KeyCode.Mouse0);

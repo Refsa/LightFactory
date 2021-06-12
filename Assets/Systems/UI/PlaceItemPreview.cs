@@ -22,4 +22,9 @@ public class PlaceItemPreview : MonoBehaviour
         gameObject.SetActive(false);
         previewRenderer.sprite = null;
     }
+
+    public void SetColor(Color color)
+    {
+        previewRenderer.color = color;
+    }
 }

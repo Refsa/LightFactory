@@ -13,6 +13,7 @@ public class BuildMenuUI : MonoBehaviour
     [SerializeField] PlaceItemPreview placeItemPreview;
 
     BuildItem selectedBuildItem;
+    BuildItemUI selectedBuildItemUI;
 
     void Awake()
     {
@@ -25,10 +26,26 @@ public class BuildMenuUI : MonoBehaviour
         GlobalEventBus.Bus.Sub<BuildItemSelected>(OnBuildItemSelected);
     }
 
-    private void OnBuildItemSelected(BuildItemSelected obj)
+    void OnBuildItemSelected(BuildItemSelected obj)
     {
         selectedBuildItem = obj.BuildItem;
+        selectedBuildItemUI = obj.BuildItemUI;
+
         placeItemPreview.Show(selectedBuildItem);
+        selectedBuildItemUI.Select();
+
+        GlobalEventBus.Bus.Pub(new GridEnable(placeItemPreview.gameObject));
+    }
+
+    void DeselectBuildItem()
+    {
+        selectedBuildItem = null;
+        placeItemPreview.Hide();
+
+        selectedBuildItemUI.Deselect();
+        selectedBuildItemUI = null;
+
+        GlobalEventBus.Bus.Pub(new GridDisable());
     }
 
     void Update()
@@ -38,13 +55,34 @@ public class BuildMenuUI : MonoBehaviour
 
     private void HandleBuildItemPlacement()
     {
-        Vector2 mousePos = WorldCamera.Instance.MouseInWorld;
-        placeItemPreview.transform.position = mousePos.ToVector3();
-
         if (Input.GetKeyDown(GameInput.CancelAction))
         {
-            selectedBuildItem = null;
-            placeItemPreview.Hide();
+            DeselectBuildItem();
+            return;
+        }
+
+        Vector2 mousePos = WorldCamera.Instance.MouseInWorld
+            .Snap(Input.GetKey(GameInput.PrecisionMode) ? GameConstants.GridMinorSnap : GameConstants.GridMajorSnap);
+
+        placeItemPreview.transform.position = mousePos.ToVector3();
+
+        var canPlaceHit = Physics2D.OverlapCircle(mousePos, 1f);
+        if (canPlaceHit != null)
+        {
+            placeItemPreview.SetColor(Color.red);
+            return;
+        }
+
+        placeItemPreview.SetColor(Color.green);
+
+        if (Input.GetKeyDown(GameInput.Place))
+        {
+            var go = GameObject.Instantiate(selectedBuildItem.Prefab);
+            go.transform.position = mousePos.ToVector3();
+            DeselectBuildItem();
+
+            GlobalEventBus.Bus.Pub(new SelectionSet(go));
+            return;
         }
     }
 }

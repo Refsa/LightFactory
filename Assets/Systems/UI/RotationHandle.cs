@@ -5,28 +5,23 @@ using Unity.Mathematics;
 
 public class RotationHandle : Handle
 {
-    [SerializeField] float snap = 22.5f;
-    [SerializeField] float precisionScale = 0.25f;
-
     Vector3 direction = Vector2.up;
 
     protected override Vector3 defaultPosition => transform.parent.position + direction * 0.5f;
-    public override Vector2 Value
+
+    void OnEnable()
     {
-        get
-        {
-            Vector3 dir = transform.localPosition.normalized;
-            float angle = Vector2.SignedAngle(dir, Vector2.up);
-            return Quaternion.Euler(0f, 0f, angle) * Vector2.up;
-        }
+        mouseDragging += OnDragging;
     }
 
-    void Awake()
+    void OnDisable()
     {
-        mouseDragging += val =>
-        {
-            transform.position += val.ToVector3();
-        };
+        mouseDragging -= OnDragging;
+    }
+
+    void OnDragging(Vector2 delta)
+    {
+        transform.position += delta.ToVector3();
     }
 
     public void SetData(GameObject targetObject)
@@ -36,18 +31,16 @@ public class RotationHandle : Handle
 
     public void Handle(GameObject targetObject)
     {
-        float angle = 0f;
-
         if (Dragging)
         {
-            float snap = this.snap;
+            float snap = GameConstants.RotationMajorSnap;
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                snap *= precisionScale;
+                snap = GameConstants.RotationMinorSnap;
             }
 
             Vector3 dir = transform.localPosition.normalized;
-            angle = Vector2.SignedAngle(dir, Vector2.up);
+            float angle = Vector2.SignedAngle(dir, Vector2.up);
             angle = Mathf.Round(angle / snap) * snap;
             angle *= -1f;
             targetObject.transform.rotation = Quaternion.Euler(0f, 0f, 90f + angle);
