@@ -50,6 +50,9 @@ MonoBehaviour:
   tags:
     Tags:
     - {fileID: 11400000, guid: 15e552af5a3f465429f547faf2ce1332, type: 2}
+    - {fileID: 11400000, guid: 46f15841ed4135c4b869137b6357ec2c, type: 2}
+    - {fileID: 11400000, guid: 481f27098331ff4498e15f56bb73ab15, type: 2}
+    - {fileID: 11400000, guid: 38095557a09887240bdc0f81c66d6a5c, type: 2}
     RequireAll: 0
 --- !u!114 &4928007083772035403
 MonoBehaviour:
@@ -65,7 +68,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   source: {fileID: 4928007084739390315}
   laserRenderer: {fileID: 4928007084739390312}
-  maxDistance: 20
+  maxDistance: 10
   sendRate: 6
   color: {r: 0, g: 1, b: 0, a: 1}
 --- !u!58 &4928007083772035400
@@ -190,13 +193,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4928007084739390314}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.31, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
+  m_LocalPosition: {x: 0.313, y: 0.001, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4928007083772035402}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
 --- !u!120 &4928007084739390312
 LineRenderer:
   m_ObjectHideFlags: 0

@@ -125,6 +125,7 @@ MonoBehaviour:
   tags:
     Tags:
     - {fileID: 11400000, guid: da9f29279fb480943865c59a6f99a985, type: 2}
+    - {fileID: 11400000, guid: 38095557a09887240bdc0f81c66d6a5c, type: 2}
     RequireAll: 0
 --- !u!1 &287619109065785366
 GameObject:
@@ -173,7 +174,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tags:
-    Tags: []
+    Tags:
+    - {fileID: 11400000, guid: 46f15841ed4135c4b869137b6357ec2c, type: 2}
+    - {fileID: 11400000, guid: 481f27098331ff4498e15f56bb73ab15, type: 2}
     RequireAll: 0
 --- !u!212 &287619109065785368
 SpriteRenderer:

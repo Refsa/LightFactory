@@ -17,7 +17,7 @@ public static class GameConstants
             {
                 if (hasGreen)
                 {
-                    return 3;
+                    return 6;
                 }
                 else
                 {
@@ -26,7 +26,7 @@ public static class GameConstants
             }
             else if (hasGreen)
             {
-
+                return 3;
             }
             else
             {

@@ -19,7 +19,7 @@ public class LightCombiner : MonoBehaviour, ITicker, ILaserCollector
 
     void Start()
     {
-        colorStorage = new int[6];
+        colorStorage = new int[7];
         activeColors = new HashSet<Color>();
         OnEnable();
     }
