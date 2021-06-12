@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1029117465}
   - component: {fileID: 1029117466}
   - component: {fileID: 9090916183953342641}
+  - component: {fileID: 8453376891676765682}
   m_Layer: 6
   m_Name: CollectorPoint
   m_TagString: Untagged
@@ -99,6 +100,22 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.15
+--- !u!114 &8453376891676765682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1029117464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 689a1c51aa9693843ae99293a3eb1027, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tags:
+    Tags:
+    - {fileID: 11400000, guid: 87f39f84f40884f45a6077bcc6b61913, type: 2}
+    RequireAll: 0
 --- !u!1 &4223830390850918367
 GameObject:
   m_ObjectHideFlags: 0
@@ -146,8 +163,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tags:
-    Tags:
-    - {fileID: 11400000, guid: 87f39f84f40884f45a6077bcc6b61913, type: 2}
+    Tags: []
     RequireAll: 0
 --- !u!212 &4102823516678378207
 SpriteRenderer:
@@ -213,4 +229,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _storage: 0
+  _color: {r: 0, g: 0, b: 0, a: 0}
   collectorPoint: {fileID: 1029117466}

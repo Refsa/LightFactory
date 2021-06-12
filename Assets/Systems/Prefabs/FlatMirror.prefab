@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1909937540}
   - component: {fileID: 1909937542}
   - component: {fileID: 5620138714366121522}
+  - component: {fileID: 7269469245018861288}
   m_Layer: 6
   m_Name: Mirror
   m_TagString: Untagged
@@ -109,6 +110,22 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.065, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &7269469245018861288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1909937539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 689a1c51aa9693843ae99293a3eb1027, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tags:
+    Tags:
+    - {fileID: 11400000, guid: da9f29279fb480943865c59a6f99a985, type: 2}
+    RequireAll: 0
 --- !u!1 &287619109065785366
 GameObject:
   m_ObjectHideFlags: 0
@@ -156,8 +173,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tags:
-    Tags:
-    - {fileID: 11400000, guid: da9f29279fb480943865c59a6f99a985, type: 2}
+    Tags: []
     RequireAll: 0
 --- !u!212 &287619109065785368
 SpriteRenderer:
@@ -222,3 +238,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f16ec5f1d2b042498fe65ac7a6b99f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  reflector: {fileID: 1909937540}

@@ -140,7 +140,7 @@ public class LaserSource : MonoBehaviour, ITicker
                 currentPos = hit.point;
                 vertices.Add(currentPos);
 
-                if (otherGO.HasTagInParent("Mirror"))
+                if (otherGO.HasTag("Mirror"))
                 {
                     if (hit.collider.GetComponentInParent<ILaserReflector>().TryReflect(currentDir, hit.normal, out var reflected))
                     {
@@ -153,7 +153,7 @@ public class LaserSource : MonoBehaviour, ITicker
                         break;
                     }
                 }
-                else if (otherGO.HasTagInParent("LaserCollector"))
+                else if (otherGO.HasTag("LaserCollector"))
                 {
                     collectors.Add(otherGO.GetComponentInParent<ILaserCollector>());
                     blocked = true;
@@ -224,7 +224,10 @@ public class LaserSource : MonoBehaviour, ITicker
     {
         if (sendRate != -1 && tick - lastSendTick >= sendRate)
         {
-            NewPacket();
+            if (collectors.Count > 0)
+            {
+                NewPacket();
+            }
             lastSendTick = tick;
         }
 
