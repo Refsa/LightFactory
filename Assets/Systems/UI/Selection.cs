@@ -67,14 +67,14 @@ public class Selection : MonoBehaviour
                 }
                 selectedGameObject = hit.gameObject;
             }
-            else if (!selectionLocked)
+            else if (!selectionLocked && selectedGameObject != null)
             {
                 selectedGameObject = null;
                 selectionChanged = true;
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && selectedGameObject != null)
         {
             selectedGameObject = null;
             selectionChanged = true;

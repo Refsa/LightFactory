@@ -19,7 +19,7 @@ public class StorageExtractor : MonoBehaviour, ITicker
 
     void Start()
     {
-        storageConnection.enabled = false;
+        storageConnection.gameObject.SetActive(false);
         solidLayerMask = 1 << LayerMask.NameToLayer("Solid");
         OnEnable();
     }
@@ -44,26 +44,27 @@ public class StorageExtractor : MonoBehaviour, ITicker
                 if (checkHit.gameObject.HasTag("LightStorage"))
                 {
                     lightStorage = checkHit.gameObject.GetComponent<LightStorage>();
+                    storageConnection.gameObject.SetActive(true);
                 }
                 else if (checkHit.gameObject.HasTagInParent("LightStorage"))
                 {
                     lightStorage = checkHit.gameObject.GetComponentInParent<LightStorage>();
+                    storageConnection.gameObject.SetActive(true);
                 }
                 else
                 {
-                    storageConnection.enabled = false;
+                    storageConnection.gameObject.SetActive(false);
                     return;
                 }
 
             }
             else
             {
-                storageConnection.enabled = false;
+                storageConnection.gameObject.SetActive(false);
                 return;
             }
         }
 
-        storageConnection.enabled = true;
         storageConnection.positionCount = 2;
         storageConnection.SetPosition(0, transform.position);
         storageConnection.SetPosition(1, lightStorage.transform.position);

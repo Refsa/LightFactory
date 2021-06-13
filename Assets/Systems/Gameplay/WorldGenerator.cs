@@ -35,6 +35,7 @@ public class WorldGenerator : MonoBehaviour
         }
     }
 
+#if UNITY_EDITOR
     void OnDrawGizmosSelected()
     {
         Color inner = new Color(1,1,1,0.05f);
@@ -44,4 +45,5 @@ public class WorldGenerator : MonoBehaviour
 
         UnityEditor.Handles.DrawSolidRectangleWithOutline(world, inner, outer);
     }
+#endif
 }
