@@ -246,12 +246,6 @@ public class LaserSource : MonoBehaviour, ITicker
 
     public void Tick(int tick)
     {
-        for (int i = packetsInTransport.Count - 1; i >= 0; i--)
-        {
-            var packet = packetsInTransport[i];
-            TickLightPacket(packet);
-        }
-
         if (sendRate != -1 && tick - lastSendTick >= sendRate)
         {
             if (connections.Count > 0)
@@ -259,6 +253,12 @@ public class LaserSource : MonoBehaviour, ITicker
                 NewPacket();
             }
             lastSendTick = tick;
+        }
+
+        for (int i = packetsInTransport.Count - 1; i >= 0; i--)
+        {
+            var packet = packetsInTransport[i];
+            TickLightPacket(packet);
         }
     }
 
@@ -279,7 +279,7 @@ public class LaserSource : MonoBehaviour, ITicker
             else
             {
                 int nextIndex = lightPacket.NextIndex + 1;
-                lightPacket.SetNext(vertices[nextIndex], nextIndex);
+                lightPacket.SetNext(vertices[lightPacket.NextIndex], nextIndex);
 
                 if (state == LightPacket.State.More)
                 {

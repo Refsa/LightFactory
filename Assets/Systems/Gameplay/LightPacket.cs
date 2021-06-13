@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class LightPacketPooler : Pooler<LightPacket>
@@ -24,6 +25,7 @@ public class LightPacket
     Vector3 next;
     int nextIndex;
     Vector3 nextPartial;
+    State state;
 
     public int NextIndex => nextIndex;
     public Vector3 Next => next;
@@ -49,6 +51,7 @@ public class LightPacket
         this.next = Vector3.zero;
         this.position = Vector3.zero;
         this.nextIndex = 0;
+        this.state = State.None;
     }
 
     public void SetNext(Vector3 next, int nextIndex)
@@ -81,22 +84,28 @@ public class LightPacket
         visual.transform.position = position;
 
         nextPartial = Vector3.MoveTowards(position, next, distanceToMove);
-
         distanceLeft -= distanceToMove;
+
         if (distanceLeft < 0f)
         {
-            return State.More;
+            state = State.More;
         }
         else if (Mathf.Approximately(0f, distanceLeft))
         {
-            return State.Done;
+            state = State.Done;
+        }
+        else
+        {
+            state = State.None;
         }
 
-        return State.None;
+        return state;
     }
 
     public void Update()
     {
+        if (state != State.None) return;
+
         visual.transform.position = Vector3.Lerp(
             visual.transform.position,
             nextPartial,
