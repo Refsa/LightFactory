@@ -265,7 +265,8 @@ public class LaserSource : MonoBehaviour, ITicker
     void TickLightPacket(LightPacket lightPacket)
     {
         var state = lightPacket.Tick();
-        if (state != LightPacket.State.None)
+        Debug.Log(state);
+        if (state != LightPacket.State.Move)
         {
             if (lightPacket.NextIndex >= vertices.Count - 1)
             {

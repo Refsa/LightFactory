@@ -16,6 +16,7 @@ public class LightPacket
         None = 0,
         More,
         Done,
+        Move,
     }
 
     GameObject visual;
@@ -96,7 +97,7 @@ public class LightPacket
         }
         else
         {
-            state = State.None;
+            state = State.Move;
         }
 
         return state;
@@ -104,7 +105,7 @@ public class LightPacket
 
     public void Update()
     {
-        if (state != State.None) return;
+        if (state != State.Move) return;
 
         visual.transform.position = Vector3.Lerp(
             visual.transform.position,
