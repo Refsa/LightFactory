@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a55195c1b1c49a84ab636de5ccfb0917, type: 3}
+  m_Name: The Prism
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 2088955911315602175, guid: 68e39b5df27dac6459975fe27a853c3b, type: 3}
+  icon: {fileID: -3089786782331789874, guid: 446e057d55b3a6941a91dee7c06fcd21, type: 3}
+  tooltip: The prism will resolve any future color outages, it's the "end all. be
+    all" of the color collecting journey
+  cost:
+  - LightMeta:
+      LightLevel: 0
+      LightColor: 6
+    Amount: 500
+  - LightMeta:
+      LightLevel: 1
+      LightColor: 6
+    Amount: 250
+  - LightMeta:
+      LightLevel: 2
+      LightColor: 6
+    Amount: 100

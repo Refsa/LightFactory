@@ -236,7 +236,7 @@ GameObject:
   - component: {fileID: 3516572919518188049}
   - component: {fileID: 2725968630064008675}
   m_Layer: 6
-  m_Name: LightUploader 2
+  m_Name: LightUploader_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -358,7 +358,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38b084f46fd01c349b46e28caf686e82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uploadRate: 10
+  uploadRate: 0
   forLevel: 1
 --- !u!1 &3516572920179730314
 GameObject:

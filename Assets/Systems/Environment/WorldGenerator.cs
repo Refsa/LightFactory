@@ -18,14 +18,6 @@ public class WorldGenerator : MonoBehaviour
         Generate();
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            Application.Quit();
-        }
-    }
-
     void Generate()
     {
         seen.Clear();

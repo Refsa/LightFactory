@@ -8,6 +8,7 @@ public class Tutorial : MonoBehaviour
     [SerializeField] List<TutorialStep> tutorialSteps;
 
     int currentStep;
+    bool inTutorial;
 
     void Awake()
     {
@@ -19,8 +20,25 @@ public class Tutorial : MonoBehaviour
         StartCoroutine(TutorialRoutine());
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F3))
+        {
+            Application.Quit();
+        }
+        if (Input.GetKeyDown(KeyCode.F1) && !inTutorial)
+        {
+            StartCoroutine(TutorialRoutine());
+        }
+    }
+
     IEnumerator TutorialRoutine()
     {
+        yield return new WaitForSeconds(0.2f);
+
+        GlobalEventBus.Bus.Pub(new CameraLock(true));
+        currentStep = 0;
+        inTutorial = true;
         while (currentStep < tutorialSteps.Count)
         {
             tutorialSteps[currentStep].Show();
@@ -31,6 +49,8 @@ public class Tutorial : MonoBehaviour
             tutorialSteps[currentStep].Hide();
             currentStep++;
         }
+        inTutorial = false;
+        GlobalEventBus.Bus.Pub(new CameraLock(false));
     }
 }
 

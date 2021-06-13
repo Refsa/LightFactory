@@ -26,6 +26,7 @@ public class WorldCamera : MonoBehaviour
     float lastCameraOrthoSizeChange;
 
     Vector2 mouseInWorld;
+    bool cameraLocked = false;
 
     public Vector2 MouseInWorld => mouseInWorld;
 
@@ -39,10 +40,19 @@ public class WorldCamera : MonoBehaviour
 
         instance = this;
         targetZoom = camera.orthographicSize;
+
+        GlobalEventBus.Bus.Sub<CameraLock>(OnCameraLock);
+    }
+
+    private void OnCameraLock(CameraLock obj)
+    {
+        cameraLocked = obj.State;
     }
 
     void LateUpdate()
     {
+        if (cameraLocked) return;
+
         if (Input.GetKeyDown(KeyCode.Mouse2))
         {
             Vector3 worldPos = camera.ScreenToWorldPoint(Input.mousePosition);
@@ -105,6 +115,16 @@ public class WorldCamera : MonoBehaviour
         }
 
         mouseInWorld = camera.ScreenToWorldPoint(Input.mousePosition);
+    }
+}
+
+public struct CameraLock : IMessage
+{
+    public bool State;
+
+    public CameraLock(bool state)
+    {
+        State = state;
     }
 }
 
