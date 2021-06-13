@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a55195c1b1c49a84ab636de5ccfb0917, type: 3}
-  m_Name: LightMiner
+  m_Name: LightUpgraderBOne
   m_EditorClassIdentifier: 
-  prefab: {fileID: 4928007083772035405, guid: 115dc848a741e6b4086a3ee7b2a9db9b, type: 3}
-  icon: {fileID: 3433769500875684059, guid: 446e057d55b3a6941a91dee7c06fcd21, type: 3}
-  tooltip: Mines light resources from light nodes
+  prefab: {fileID: 2517547767051355098, guid: 953b5fcba18ff5641a26a81d9c9cdf14, type: 3}
+  icon: {fileID: 2438393261465058855, guid: 446e057d55b3a6941a91dee7c06fcd21, type: 3}
+  tooltip: Upgrades blue light from level one to two

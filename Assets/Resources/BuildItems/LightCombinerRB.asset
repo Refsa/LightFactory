@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a55195c1b1c49a84ab636de5ccfb0917, type: 3}
-  m_Name: LightCombiner
+  m_Name: LightCombinerRB
   m_EditorClassIdentifier: 
-  prefab: {fileID: 2517547767051355098, guid: 1b2ba4287d089c2478ab1b48185ef6c8, type: 3}
-  icon: {fileID: 2440272111937495713, guid: 446e057d55b3a6941a91dee7c06fcd21, type: 3}
-  tooltip: Combines two lasers into a new color
+  prefab: {fileID: 2517547767051355098, guid: 8ea42d679a01f094a8832ade52d247cd, type: 3}
+  icon: {fileID: 7422330087579933422, guid: 446e057d55b3a6941a91dee7c06fcd21, type: 3}
+  tooltip: Combines red and blue into magenta

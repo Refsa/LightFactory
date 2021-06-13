@@ -29,7 +29,7 @@ public class LightMiner : MonoBehaviour, ILaserCollector, ITicker
         GlobalEventBus.Bus.Pub(new UnregisterTicker(this));
     }
 
-    public void Notify(Color color)
+    public void Notify(Color color, LightPacket lightPacket)
     {
         laserSource.SetColor(color);
         gotPacket = true;

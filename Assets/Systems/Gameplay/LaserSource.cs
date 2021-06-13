@@ -268,12 +268,12 @@ public class LaserSource : MonoBehaviour, ITicker
         {
             if (lightPacket.NextIndex >= vertices.Count - 1)
             {
-                FreeLightPacket(lightPacket);
-
                 foreach (var collector in connections.Values)
                 {
-                    collector.Dest.Notify(color);
+                    collector.Dest.Notify(color, lightPacket);
                 }
+
+                FreeLightPacket(lightPacket);
             }
             else
             {
@@ -288,16 +288,18 @@ public class LaserSource : MonoBehaviour, ITicker
         }
     }
 
-    public void NewPacket()
+    public void NewPacket(LightLevel lightLevel = LightLevel.One)
     {
         var lightPacket = Pools.LightPacketPooler.Get()
             .Setup(
-                LightPacketVisualPool.Instance.Get(), 
+                LightPacketVisualPool.Instance.Get(),
                 vertices[0],
-                vertices[1], 
+                vertices[1],
                 1);
 
-        lightPacket.Visual.GetComponent<LightPacketVisual>().SetColor(color);
+        var visual = lightPacket.Visual.GetComponent<LightPacketVisual>();
+        visual.SetColor(color);
+        visual.SetLevel(lightLevel);
 
         packetsInTransport.Add(lightPacket);
     }

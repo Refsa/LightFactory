@@ -1,8 +1,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Colors
+{
+    Red = 0,
+    Green,
+    Blue,
+    Cyan,
+    Magenta,
+    Yellow,
+    White
+}
+
+public enum LightLevel
+{
+    One = 0,
+    Two,
+    Three,
+    Four
+}
+
 public static class GameConstants
 {
+    public const int LightPacketOne = 0;
+    public const int LightPacketTwo = 1;
+    public const int LightPacketThree = 2;
+    public const int LightPacketFour = 3;
+
     public const float LightPacketSpeed = 0.25f;
 
     public const float GridMajorSnap = 0.5f;
@@ -73,5 +97,23 @@ public static class GameConstants
         }
 
         return Color.white;
+    }
+
+    public static Color CombineColor(in Color a, in Color b)
+    {
+        if (a == Color.red && b == Color.green || a == Color.green && b == Color.red)
+        {
+            return Color.yellow;
+        }
+        if (a == Color.red && b == Color.blue || a == Color.blue && b == Color.red)
+        {
+            return Color.magenta;
+        }
+        if (a == Color.blue && b == Color.green || a == Color.green && b == Color.blue)
+        {
+            return Color.cyan;
+        }
+
+        throw new System.ArgumentException($"Colors {a} and {b} cant be combined");
     }
 }

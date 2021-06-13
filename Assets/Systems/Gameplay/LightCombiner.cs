@@ -6,22 +6,27 @@ using UnityEngine;
 
 public class LightCombiner : MonoBehaviour, ITicker, ILaserCollector
 {
-    [SerializeField] int collectorCount;
     [SerializeField] int combineRate = 2;
+    [SerializeField] Color combineA = Color.white;
+    [SerializeField] Color combineB = Color.white;
 
     [AutoBind] LaserSource laserSource;
 
-    int[] colorStorage;
-    HashSet<Color> activeColors;
+    int colorStorageA = 0;
+    int colorStorageB = 0;
+
     int lastCombine;
+    int connections = 0;
 
     public int TickerPriority => TickerPriorities.LIGHT_COMBINER;
 
     void Start()
     {
-        colorStorage = new int[7];
-        activeColors = new HashSet<Color>();
         OnEnable();
+
+        Color combinedColor = GameConstants.CombineColor(combineA, combineB);
+        combinedColor.a = 1f;
+        laserSource.SetColor(combinedColor);
     }
 
     void OnEnable()
@@ -36,72 +41,62 @@ public class LightCombiner : MonoBehaviour, ITicker, ILaserCollector
 
     void ClearStorage()
     {
-        for (int i = 0; i < 6; i++)
-        {
-            colorStorage[i] = 0;
-        }
+        colorStorageA = 0;
+        colorStorageB = 0;
     }
 
-    public void Notify(Color color)
+    public void Notify(Color color, LightPacket lightPacket)
     {
-        activeColors.Add(color);
-        colorStorage[GameConstants.ColorToID(color)]++;
+        if (color == combineA)
+        {
+            colorStorageA++;
+        }
+        else if (color == combineB)
+        {
+            colorStorageB++;
+        }
     }
 
     public void NotifyConnected(GameObject source)
     {
-        
+
     }
 
     public void Tick(int tick)
     {
-        if (activeColors.Count < collectorCount)
+        if (tick - lastCombine >= combineRate)
         {
-            laserSource.Disable();
-        }
-        else if (activeColors.Count > collectorCount)
-        {
-            activeColors.Clear();
-            ClearStorage();
-        }
-        else
-        {
-            laserSource.Enable();
-            Color combinedColor = activeColors.Aggregate(Color.black, (acc, val) => acc += val);
-            combinedColor.a = 1f;
-            laserSource.SetColor(combinedColor);
+            lastCombine = tick;
 
-            if (tick - lastCombine >= combineRate)
-            {
-                lastCombine = tick;
+            bool hasCapacity = colorStorageA > 0 && colorStorageB > 0;
 
-                bool hasCapacity = true;
-                foreach (var color in activeColors)
-                {
-                    hasCapacity = hasCapacity && colorStorage[GameConstants.ColorToID(color)] > 0;
-                }
+            if (!hasCapacity) return;
 
-                if (!hasCapacity) return;
+            colorStorageA--;
+            colorStorageB--;
 
-                foreach (var color in activeColors)
-                {
-                    int index = GameConstants.ColorToID(color);
-                    colorStorage[index]--;
-                }
-
-                laserSource.NewPacket();
-                laserSource.Tick(tick);
-            }
+            laserSource.NewPacket();
+            laserSource.Tick(tick);
         }
     }
 
     public void NotifyConnected(Connection connection)
     {
-        
+        connections++;
+
+        if (connections == 2)
+        {
+            laserSource.Enable();
+        }
     }
 
     public void NotifyDisconnected(Connection connection)
     {
-        
+        connections--;
+
+        if (connections != 2)
+        {
+            laserSource.Disable();
+        }
     }
 }

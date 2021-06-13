@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a55195c1b1c49a84ab636de5ccfb0917, type: 3}
+  m_Name: LightUpgraderROne
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 2517547767051355098, guid: b2ba1fd21c0d65d4cb67c4bdfd899868, type: 3}
+  icon: {fileID: -1275831690435379319, guid: 446e057d55b3a6941a91dee7c06fcd21, type: 3}
+  tooltip: Upgrades red light from level one to two

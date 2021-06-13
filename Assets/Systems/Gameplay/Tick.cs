@@ -66,6 +66,8 @@ public class Tick : MonoBehaviour
 
     void OnEnable()
     {
+        tickers = new HashSet<ITicker>();
+
         currentTick = 0;
         if (tickRoutine == null)
         {

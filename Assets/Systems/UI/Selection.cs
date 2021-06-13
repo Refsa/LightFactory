@@ -66,7 +66,6 @@ public class Selection : MonoBehaviour
                     selectionChanged = true;
                 }
                 selectedGameObject = hit.gameObject;
-
             }
             else if (!selectionLocked)
             {

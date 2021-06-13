@@ -31,6 +31,7 @@ public class WorldGenerator : MonoBehaviour
 
             var go = GameObject.Instantiate(resourceFieldGameobject, transform);
             go.transform.position = sample - (Vector2.one * worldSize * 0.5f);
+            go.transform.position = go.transform.position.Snap(GameConstants.GridMinorSnap);
         }
     }
 

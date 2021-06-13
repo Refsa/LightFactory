@@ -18,6 +18,8 @@ public class LightPacket
     }
 
     GameObject visual;
+    LightLevel lightLevel = LightLevel.One;
+
     Vector3 position;
     Vector3 next;
     int nextIndex;
@@ -27,6 +29,7 @@ public class LightPacket
     public Vector3 Next => next;
     public Vector3 Position => position;
     public GameObject Visual => visual;
+    public LightLevel LightLevel => lightLevel;
 
     public LightPacket Setup(GameObject visual, Vector3 previous, Vector3 next, int nextIndex)
     {
@@ -58,6 +61,15 @@ public class LightPacket
     {
         this.position = pos;
         visual.transform.position = this.position;
+    }
+
+    public void SetLightLevel(LightLevel lightLevel)
+    {
+        this.lightLevel = lightLevel;
+        if (this.visual != null)
+        {
+            this.visual.GetComponent<LightPacketVisual>().SetLevel(lightLevel);
+        }
     }
 
     public State Tick()
