@@ -80,6 +80,21 @@ public class Selection : MonoBehaviour
             selectionChanged = true;
         }
 
+        if (Input.GetKeyDown(KeyCode.Delete) && selectedGameObject != null)
+        {
+            if (selectedGameObject.HasTag("Selectable"))
+            {
+                GameObject.Destroy(selectedGameObject);
+            }
+            else 
+            {
+                GameObject.Destroy(selectedGameObject.transform.parent.gameObject);
+            }
+
+            selectedGameObject = null;
+            selectionChanged = true;
+        }
+
         if (selectionChanged)
         {
             GlobalEventBus.Bus.Pub(new SelectionChanged(selectedGameObject));

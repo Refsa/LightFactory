@@ -28,6 +28,7 @@ public abstract class Handle : MonoBehaviour
     public event System.Action mouseLeft;
     public event System.Action mouseHovering;
     public event System.Action<Vector2> mouseDragging;
+    public event System.Action mouse0Clicked;
 
     void Awake()
     {
@@ -86,6 +87,8 @@ public abstract class Handle : MonoBehaviour
         {
             wasPressedOnThis = true;
             lastMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            mouse0Clicked?.Invoke();
         }
 
         bool isDown = Input.GetKey(KeyCode.Mouse0);

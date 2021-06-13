@@ -8,23 +8,33 @@ public class TransformHandle : MonoBehaviour
 {
     [SerializeField] PositionHandle positionHandle;
     [SerializeField] RotationHandle rotationHandle;
+    [SerializeField] DeletaHandle deleteHandle;
 
     public bool Active => positionHandle.Active || rotationHandle.Active;
 
     GameObject selected;
     GameObject rotateable;
     GameObject movable;
+    GameObject deleteable;
 
     void Awake()
     {
         GlobalEventBus.Bus.Sub<SelectionChanged>(OnSelectionChanged);
+        GlobalEventBus.Bus.Sub<TransformHandleToggle>(OnTransformHandleToggle);
         gameObject.SetActive(false);
 
         positionHandle.mouseEntered += () => GlobalEventBus.Bus.Pub(new SelectionLock(true));
         rotationHandle.mouseEntered += () => GlobalEventBus.Bus.Pub(new SelectionLock(true));
+        deleteHandle.mouseEntered += () => GlobalEventBus.Bus.Pub(new SelectionLock(true));
 
         positionHandle.mouseLeft += () => GlobalEventBus.Bus.Pub(new SelectionLock(false));
         rotationHandle.mouseLeft += () => GlobalEventBus.Bus.Pub(new SelectionLock(false));
+        deleteHandle.mouseLeft += () => GlobalEventBus.Bus.Pub(new SelectionLock(false));
+    }
+
+    private void OnTransformHandleToggle(TransformHandleToggle obj)
+    {
+        gameObject.SetActive(obj.State);
     }
 
     void Update()
@@ -43,6 +53,11 @@ public class TransformHandle : MonoBehaviour
         {
             rotationHandle.SetData(rotateable);
             rotationHandle.Handle(rotateable);
+        }
+
+        if (deleteHandle != null)
+        {
+            deleteHandle.Handle(deleteable);
         }
     }
 
@@ -93,6 +108,19 @@ public class TransformHandle : MonoBehaviour
             rotateable = null;
         }
 
+        if (targetObject.HasTag("Deleteable"))
+        {
+            deleteable = targetObject;
+        }
+        else if (targetObject.HasTagInParent("Deleteable"))
+        {
+            deleteable = targetObject.transform.parent.gameObject;
+        }
+        else
+        { 
+            deleteable = null;
+        }
+
         positionHandle.gameObject.SetActive(movable != null);
         rotationHandle.gameObject.SetActive(rotateable != null);
 
@@ -121,6 +149,16 @@ public struct TransformHandleStatus : IMessage
     public bool State;
 
     public TransformHandleStatus(bool state)
+    {
+        State = state;
+    }
+}
+
+public struct TransformHandleToggle : IMessage
+{
+    public bool State;
+
+    public TransformHandleToggle(bool state)
     {
         State = state;
     }

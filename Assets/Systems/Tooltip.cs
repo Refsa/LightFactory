@@ -4,7 +4,7 @@ using UnityEngine;
 public class Tooltip : MonoBehaviour
 {
     [SerializeField] string title = "Placeholder...";
-    [SerializeField] string description = "Placeholder...";
+    [SerializeField, TextArea] string description = "Placeholder...";
     [SerializeField] Sprite icon;
 
     public string Title => title;

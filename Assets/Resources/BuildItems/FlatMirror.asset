@@ -15,3 +15,16 @@ MonoBehaviour:
   prefab: {fileID: 287619109065785366, guid: 3364b96d103c6e94c935a6ba9da29ffb, type: 3}
   icon: {fileID: 5618972051590531670, guid: 446e057d55b3a6941a91dee7c06fcd21, type: 3}
   tooltip: Reflecs lasers in new directions
+  cost:
+  - LightMeta:
+      LightLevel: 0
+      LightColor: 0
+    Amount: 5
+  - LightMeta:
+      LightLevel: 0
+      LightColor: 1
+    Amount: 5
+  - LightMeta:
+      LightLevel: 0
+      LightColor: 2
+    Amount: 5

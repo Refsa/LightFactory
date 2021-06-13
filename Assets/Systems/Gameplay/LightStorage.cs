@@ -9,9 +9,9 @@ public class LightStorage : MonoBehaviour, ITicker, ILaserCollector
     [SerializeField] int _storage;
     [SerializeField] Color _color;
     [SerializeField] SpriteRenderer collectorPoint;
+    [SerializeField] LightLevel forLevel;
 
 
-    LightLevel activeLevel;
     Color activeColor;
     int storage;
 
@@ -28,23 +28,29 @@ public class LightStorage : MonoBehaviour, ITicker, ILaserCollector
         }
 
         storage--;
-        return (activeLevel, activeColor);
+        return (forLevel, activeColor);
     }
 
     public void Notify(Color color, LightPacket lightPacket)
     {
+        if (lightPacket.LightLevel != forLevel)
+        {
+            // TODO: feedback on wrong light level
+            return;
+        }
+
         if (activeColor.a == 0f)
         {
             activeColor = color;
             collectorPoint.color = activeColor;
         }
 
-        if (activeColor != color || lightPacket.LightLevel != activeLevel)
+        if (activeColor != color)
         {
             storage = 0;
             activeColor = color;
             collectorPoint.color = activeColor;
-            activeLevel = lightPacket.LightLevel;
+            // TODO: Feedback on color change
         }
 
         storage++;

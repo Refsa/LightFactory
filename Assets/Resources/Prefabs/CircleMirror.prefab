@@ -114,6 +114,7 @@ MonoBehaviour:
     Tags:
     - {fileID: 11400000, guid: 46f15841ed4135c4b869137b6357ec2c, type: 2}
     - {fileID: 11400000, guid: 481f27098331ff4498e15f56bb73ab15, type: 2}
+    - {fileID: 11400000, guid: d4eb3bf9057ffa840b33cd863479ea75, type: 2}
     RequireAll: 0
 --- !u!212 &4964039941966331326
 SpriteRenderer:

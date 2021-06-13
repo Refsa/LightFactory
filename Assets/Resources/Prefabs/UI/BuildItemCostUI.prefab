@@ -51,6 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1ff22c417199eb44a405dc75540e71d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  listenEvent: 0
   icon: {fileID: 0}
   iconImage: {fileID: 323533641090390984}
   amountText: {fileID: 323533639995330998}

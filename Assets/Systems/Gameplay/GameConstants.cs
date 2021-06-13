@@ -105,7 +105,7 @@ public static class GameConstants
             return 2;
         }
 
-        return -1;
+        return 7;
     }
 
     public static Color IDToColor(int id)
@@ -123,6 +123,23 @@ public static class GameConstants
         }
 
         return Color.white;
+    }
+
+    public static LightColor IDToLightColor(int id)
+    {
+        if (id > 5) return LightColor.White;
+
+        switch (id)
+        {
+            case 0: return LightColor.Red;
+            case 1: return LightColor.Blue;
+            case 2: return LightColor.Green;
+            case 3: return LightColor.Yellow;
+            case 4: return LightColor.Magenta;
+            case 5: return LightColor.Cyan;
+        }
+
+        return LightColor.White;
     }
 
     public static Color CombineColor(in Color a, in Color b)
@@ -169,7 +186,7 @@ public static class GameConstants
         if (color == Color.yellow) return LightColor.Yellow;
         if (color == Color.white) return LightColor.White;
 
-        throw new System.ArgumentOutOfRangeException();
+        throw new System.ArgumentOutOfRangeException(color.ToString());
     }
 
     public static int SolidLayer => 1 << LayerMask.NameToLayer("Solid");

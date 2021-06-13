@@ -9,6 +9,7 @@ public class LightCombiner : MonoBehaviour, ITicker, ILaserCollector
     [SerializeField] int combineRate = 2;
     [SerializeField] Color combineA = Color.white;
     [SerializeField] Color combineB = Color.white;
+    [SerializeField] LightLevel forLevel;
 
     [AutoBind] LaserSource laserSource;
 
@@ -47,6 +48,12 @@ public class LightCombiner : MonoBehaviour, ITicker, ILaserCollector
 
     public void Notify(Color color, LightPacket lightPacket)
     {
+        if (lightPacket.LightLevel != forLevel)
+        {
+            // TODO: feedback on wrong light level
+            return;
+        }
+
         if (color == combineA)
         {
             colorStorageA++;
