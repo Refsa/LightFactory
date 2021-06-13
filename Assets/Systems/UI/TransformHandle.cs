@@ -53,7 +53,6 @@ public class TransformHandle : MonoBehaviour
             selected = obj.Target;
             SetData(selected);
             gameObject.SetActive(true);
-            Debug.Log("Transform Handle On");
         }
         else
         {
@@ -63,7 +62,6 @@ public class TransformHandle : MonoBehaviour
             gameObject.SetActive(false);
 
             GlobalEventBus.Bus.Pub(new TransformHandleStatus(false));
-            Debug.Log("Transform Handle Off");
         }
     }
 

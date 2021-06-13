@@ -15,7 +15,7 @@ public class Selection : MonoBehaviour
 
     void Awake()
     {
-        targetLayerMask = 1 << LayerMask.NameToLayer("Solid");
+        targetLayerMask = GameConstants.SolidLayer;
 
         GlobalEventBus.Bus.Sub<SelectionLock>(OnSelectionLock);
         GlobalEventBus.Bus.Sub<SelectionSet>(OnSelectionSet);

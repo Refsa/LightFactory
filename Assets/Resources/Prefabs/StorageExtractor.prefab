@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5062198059891186524
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7348428414029326156}
+  m_Layer: 6
+  m_Name: ConnectorPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7348428414029326156
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5062198059891186524}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.217, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6806029971869567118}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5340423760850202337
 GameObject:
   m_ObjectHideFlags: 0
@@ -13,6 +43,7 @@ GameObject:
   - component: {fileID: 5220472417521560545}
   - component: {fileID: 5340423760850202143}
   - component: {fileID: 5340423760850202142}
+  - component: {fileID: 4138897646496101037}
   m_Layer: 6
   m_Name: StorageExtractor
   m_TagString: Untagged
@@ -34,6 +65,7 @@ Transform:
   - {fileID: 8107306442072272679}
   - {fileID: 6491243480854235867}
   - {fileID: 6491243480672411440}
+  - {fileID: 7348428414029326156}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -120,8 +152,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   laserSource: {fileID: 5340423760850202142}
   storageConnection: {fileID: 6491243480672411441}
+  storageConnectorPoint: {fileID: 7348428414029326156}
   extractionRate: 2
-  range: 2
+  range: 2.5
 --- !u!114 &5340423760850202142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,8 +170,23 @@ MonoBehaviour:
   source: {fileID: 6491243480854235867}
   laserRenderer: {fileID: 6491243480854235866}
   maxDistance: 20
-  sendRate: 4
+  sendRate: -1
   color: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &4138897646496101037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5340423760850202337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b983b53fdbe50d44893212c0dc93195c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  title: Storage Extractor
+  description: Extracts resources from nearby storage once every 2 ticks
+  icon: {fileID: 6030144671638036906, guid: 446e057d55b3a6941a91dee7c06fcd21, type: 3}
 --- !u!1 &6491243480672411443
 GameObject:
   m_ObjectHideFlags: 0

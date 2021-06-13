@@ -139,6 +139,7 @@ GameObject:
   - component: {fileID: 287619109065785370}
   - component: {fileID: 287619109065785368}
   - component: {fileID: 1197771384}
+  - component: {fileID: -621806824946867223}
   m_Layer: 6
   m_Name: FlatMirror
   m_TagString: Untagged
@@ -242,3 +243,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   reflector: {fileID: 1909937540}
+--- !u!114 &-621806824946867223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 287619109065785366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b983b53fdbe50d44893212c0dc93195c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  title: Flat Mirror
+  description: Reflects light off it's silver surface
+  icon: {fileID: 5618972051590531670, guid: 446e057d55b3a6941a91dee7c06fcd21, type: 3}

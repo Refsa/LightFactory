@@ -64,12 +64,13 @@ public class LaserSource : MonoBehaviour, ITicker
     int solidLayerMask;
 
     public int TickerPriority => TickerPriorities.LASER_SOURCE;
+    public Color Color => color;
 
     void Start()
     {
         defaultSendRate = sendRate;
 
-        solidLayerMask = 1 << LayerMask.NameToLayer("Solid");
+        solidLayerMask = GameConstants.SolidLayer;
 
         packetsInTransport = new List<LightPacket>();
         laserHits = new HashSet<GameObject>();

@@ -97,8 +97,9 @@ GameObject:
   - component: {fileID: 2517547767051355088}
   - component: {fileID: 2517547767051355103}
   - component: {fileID: 8505238605575706570}
+  - component: {fileID: 8472829609944226883}
   m_Layer: 6
-  m_Name: LightUpgraderB
+  m_Name: LightUpgraderBOne
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -188,6 +189,21 @@ MonoBehaviour:
   upgradeFrom: 0
   upgradeTo: 1
   combineRate: 2
+--- !u!114 &8472829609944226883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2517547767051355098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b983b53fdbe50d44893212c0dc93195c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  title: Light Amplifier
+  description: Amplifies blue light from level 1 to level 2
+  icon: {fileID: 2438393261465058855, guid: 446e057d55b3a6941a91dee7c06fcd21, type: 3}
 --- !u!1 &2517547767421434442
 GameObject:
   m_ObjectHideFlags: 0

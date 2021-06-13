@@ -61,6 +61,12 @@ public class BuildMenuUI : MonoBehaviour
             return;
         }
 
+        if (!LightInventory.Instance.CanAfford(selectedBuildItem.Cost))
+        {
+            DeselectBuildItem();
+            return;
+        }
+
         Vector2 mousePos = WorldCamera.Instance.MouseInWorld
             .Snap(Input.GetKey(GameInput.PrecisionMode) ? GameConstants.GridMinorSnap : GameConstants.GridMajorSnap);
 
@@ -77,6 +83,11 @@ public class BuildMenuUI : MonoBehaviour
 
         if (Input.GetKeyDown(GameInput.Place))
         {
+            foreach (var cost in selectedBuildItem.Cost)
+            {
+                GlobalEventBus.Bus.Pub(new LightInventoryChange(cost.LightMeta.LightLevel, cost.LightMeta.LightColor, -cost.Amount));
+            }
+
             var go = GameObject.Instantiate(selectedBuildItem.Prefab);
             go.transform.position = mousePos.ToVector3();
             DeselectBuildItem();

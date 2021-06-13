@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 1215682618}
   - component: {fileID: 4176605978131278569}
   m_Layer: 6
-  m_Name: LightMiner
+  m_Name: LightMinerOne
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -214,7 +214,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   title: Light Miner
-  description: Mines resources from light nodes
+  description: Mines resources from light nodes once every 6 ticks
   icon: {fileID: 3433769500875684059, guid: 446e057d55b3a6941a91dee7c06fcd21, type: 3}
 --- !u!1 &4928007084305046203
 GameObject:

@@ -24,7 +24,15 @@ public class BuildItemUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public void OnPointerEnter(PointerEventData eventData)
     {
         GlobalEventBus.Bus.Pub(new BuildItemTooltipShow(this));
-        backgroundImage.color = Color.gray;
+
+        if (!LightInventory.Instance.CanAfford(targetBuildItem.Cost))
+        {
+            backgroundImage.color = Color.red;
+        }
+        else
+        {
+            backgroundImage.color = Color.gray;
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)

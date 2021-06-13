@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Colors
+public enum LightColor
 {
     Red = 0,
     Green,
@@ -18,6 +18,32 @@ public enum LightLevel
     Two,
     Three,
     Four
+}
+
+[System.Serializable]
+public class LightMeta
+{
+    public LightLevel LightLevel;
+    public LightColor LightColor;
+
+    public LightMeta(LightLevel lightLevel, LightColor lightColor)
+    {
+        LightLevel = lightLevel;
+        LightColor = lightColor;
+    }
+}
+
+[System.Serializable]
+public class LightCurrency
+{
+    public LightMeta LightMeta;
+    public int Amount;
+
+    public LightCurrency(LightMeta lightMeta, int amount)
+    {
+        LightMeta = lightMeta;
+        Amount = amount;
+    }
 }
 
 public static class GameConstants
@@ -116,4 +142,35 @@ public static class GameConstants
 
         throw new System.ArgumentException($"Colors {a} and {b} cant be combined");
     }
+
+    public static Color ToColor(this LightColor lightColor)
+    {
+        switch (lightColor)
+        {
+            case LightColor.Red: return Color.red;
+            case LightColor.Green: return Color.green;
+            case LightColor.Blue: return Color.blue;
+            case LightColor.Cyan: return Color.cyan;
+            case LightColor.Magenta: return Color.magenta;
+            case LightColor.Yellow: return Color.yellow;
+            case LightColor.White: return Color.white;
+        }
+
+        return Color.clear;
+    }
+
+    public static LightColor ToColor(this Color color)
+    {
+        if (color == Color.red) return LightColor.Red;
+        if (color == Color.green) return LightColor.Green;
+        if (color == Color.blue) return LightColor.Blue;
+        if (color == Color.cyan) return LightColor.Cyan;
+        if (color == Color.magenta) return LightColor.Magenta;
+        if (color == Color.yellow) return LightColor.Yellow;
+        if (color == Color.white) return LightColor.White;
+
+        throw new System.ArgumentOutOfRangeException();
+    }
+
+    public static int SolidLayer => 1 << LayerMask.NameToLayer("Solid");
 }
