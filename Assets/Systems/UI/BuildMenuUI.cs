@@ -66,7 +66,7 @@ public class BuildMenuUI : MonoBehaviour
 
         placeItemPreview.transform.position = mousePos.ToVector3();
 
-        var canPlaceHit = Physics2D.OverlapCircle(mousePos, 1f);
+        var canPlaceHit = Physics2D.OverlapCircle(mousePos, 0.5f);
         if (canPlaceHit != null)
         {
             placeItemPreview.SetColor(Color.red);

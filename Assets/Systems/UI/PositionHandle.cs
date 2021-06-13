@@ -40,7 +40,6 @@ public class PositionHandle : Handle
 
     public void Handle(GameObject targetObject)
     {
-        Debug.Log(state);
         if (Dragging)
         {
             float snap = GameConstants.GridMajorSnap;

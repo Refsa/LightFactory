@@ -4,19 +4,6 @@ using System.Linq;
 using Refsa.EventBus;
 using UnityEngine;
 
-public class Connection
-{
-    public LaserSource Src;
-    public ILaserCollector Dest;
-    public int LastConnectionTime;
-
-    public Connection(LaserSource src, ILaserCollector dest)
-    {
-        Src = src;
-        Dest = dest;
-    }
-}
-
 public class LaserSource : MonoBehaviour, ITicker
 {
     static readonly Dictionary<Color, Gradient> LaserLineGradients = new Dictionary<Color, Gradient>();
@@ -69,6 +56,8 @@ public class LaserSource : MonoBehaviour, ITicker
     Dictionary<ILaserCollector, Connection> connections;
     float distanceNorm;
 
+    int defaultSendRate;
+
     int lastSendTick;
     List<LightPacket> packetsInTransport;
 
@@ -78,6 +67,8 @@ public class LaserSource : MonoBehaviour, ITicker
 
     void Start()
     {
+        defaultSendRate = sendRate;
+
         solidLayerMask = 1 << LayerMask.NameToLayer("Solid");
 
         packetsInTransport = new List<LightPacket>();
@@ -104,6 +95,7 @@ public class LaserSource : MonoBehaviour, ITicker
         GlobalEventBus.Bus.Pub(new RegisterTicker(this));
 
         laserHits = new HashSet<GameObject>();
+        connections = new Dictionary<ILaserCollector, Connection>();
     }
 
     void OnDisable()
@@ -173,6 +165,7 @@ public class LaserSource : MonoBehaviour, ITicker
                     if (!connections.TryGetValue(collector, out var conn))
                     {
                         conn = new Connection(this, collector);
+                        connections.Add(collector, conn);
                         collector.NotifyConnected(conn);
                     }
                     conn.LastConnectionTime = Time.frameCount;
@@ -252,6 +245,12 @@ public class LaserSource : MonoBehaviour, ITicker
 
     public void Tick(int tick)
     {
+        for (int i = packetsInTransport.Count - 1; i >= 0; i--)
+        {
+            var packet = packetsInTransport[i];
+            TickLightPacket(packet);
+        }
+
         if (sendRate != -1 && tick - lastSendTick >= sendRate)
         {
             if (connections.Count > 0)
@@ -260,22 +259,6 @@ public class LaserSource : MonoBehaviour, ITicker
             }
             lastSendTick = tick;
         }
-
-        for (int i = packetsInTransport.Count - 1; i >= 0; i--)
-        {
-            var packet = packetsInTransport[i];
-            TickLightPacket(packet);
-        }
-    }
-
-    public void NewPacket()
-    {
-        var lightPacket = Pools.LightPacketPooler.Get()
-                .Setup(LightPacketVisualPool.Instance.Get(), vertices[0], vertices[1], 1);
-
-        lightPacket.Visual.GetComponent<LightPacketVisual>().SetColor(color);
-
-        packetsInTransport.Add(lightPacket);
     }
 
     void TickLightPacket(LightPacket lightPacket)
@@ -287,9 +270,9 @@ public class LaserSource : MonoBehaviour, ITicker
             {
                 FreeLightPacket(lightPacket);
 
-                foreach (var collector in connections)
+                foreach (var collector in connections.Values)
                 {
-                    collector.Value.Dest.Notify(color);
+                    collector.Dest.Notify(color);
                 }
             }
             else
@@ -305,12 +288,27 @@ public class LaserSource : MonoBehaviour, ITicker
         }
     }
 
+    public void NewPacket()
+    {
+        var lightPacket = Pools.LightPacketPooler.Get()
+            .Setup(
+                LightPacketVisualPool.Instance.Get(), 
+                vertices[0],
+                vertices[1], 
+                1);
+
+        lightPacket.Visual.GetComponent<LightPacketVisual>().SetColor(color);
+
+        packetsInTransport.Add(lightPacket);
+    }
+
     void FreeLightPacket(LightPacket lightPacket)
     {
         packetsInTransport.Remove(lightPacket);
 
-        Pools.LightPacketPooler.Free(lightPacket);
         LightPacketVisualPool.Instance.Free(lightPacket.Visual);
+        lightPacket.Clear();
+        Pools.LightPacketPooler.Free(lightPacket);
     }
 
     void ClearLightPackets()
@@ -335,6 +333,11 @@ public class LaserSource : MonoBehaviour, ITicker
     public void SetRate(int rate)
     {
         this.sendRate = rate;
+    }
+
+    public void ResetRate()
+    {
+        this.sendRate = defaultSendRate;
     }
 
     public void Enable()

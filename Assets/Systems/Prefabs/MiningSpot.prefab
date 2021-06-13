@@ -131,7 +131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resourcePrefab: {fileID: 2929317641629676384, guid: 84a2e54c057e9cd43a3f943b22f1250a, type: 3}
-  resourceSpots: {x: 1, y: 8}
+  resourceSpots: {x: 2, y: 8}
 --- !u!114 &4022106987300675861
 MonoBehaviour:
   m_ObjectHideFlags: 0

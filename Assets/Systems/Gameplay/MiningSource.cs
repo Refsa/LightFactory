@@ -23,7 +23,7 @@ public class MiningSource : MonoBehaviour, ITicker
 
     public void Randomize()
     {
-        Color color = GameConstants.IDToColor(Random.Range(0, 6));
+        Color color = GameConstants.IDToColor(Random.Range(0, 3));
 
         int resourceCount = Random.Range(resourceSpots.x, resourceSpots.y);
         resources = new MiningResource[resourceCount];

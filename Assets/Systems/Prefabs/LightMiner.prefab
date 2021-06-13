@@ -85,8 +85,8 @@ GameObject:
   - component: {fileID: 4928007083772035402}
   - component: {fileID: 2658606138472378285}
   - component: {fileID: 4928007083772035401}
+  - component: {fileID: 3884871376638304961}
   - component: {fileID: 4928007083772035403}
-  - component: {fileID: 4928007083772035400}
   - component: {fileID: 1215682618}
   - component: {fileID: 4176605978131278569}
   m_Layer: 6
@@ -143,7 +143,34 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 46f15841ed4135c4b869137b6357ec2c, type: 2}
     - {fileID: 11400000, guid: 481f27098331ff4498e15f56bb73ab15, type: 2}
     - {fileID: 11400000, guid: 38095557a09887240bdc0f81c66d6a5c, type: 2}
+    - {fileID: 11400000, guid: 87f39f84f40884f45a6077bcc6b61913, type: 2}
     RequireAll: 0
+--- !u!61 &3884871376638304961
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4928007083772035405}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.07069352, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.47861296, y: 0.6213865}
+  m_EdgeRadius: 0
 --- !u!114 &4928007083772035403
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -158,25 +185,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   source: {fileID: 4928007084739390315}
   laserRenderer: {fileID: 4928007084739390312}
-  maxDistance: 10
+  maxDistance: 20
   sendRate: -1
   color: {r: 0, g: 0, b: 0, a: 1}
---- !u!58 &4928007083772035400
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4928007083772035405}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.3
 --- !u!114 &1215682618
 MonoBehaviour:
   m_ObjectHideFlags: 0

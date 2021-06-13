@@ -53,6 +53,6 @@ public class LightMiner : MonoBehaviour, ILaserCollector, ITicker
     public void NotifyDisconnected(Connection connection)
     {
         this.connection = null;
-        connection.Src.SetRate(0);
+        connection.Src.ResetRate();
     }
 }
