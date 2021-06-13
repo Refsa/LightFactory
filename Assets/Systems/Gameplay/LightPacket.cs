@@ -48,7 +48,7 @@ public class LightPacket
         this.visual = null;
         this.next = Vector3.zero;
         this.position = Vector3.zero;
-        this.nextIndex = -1;
+        this.nextIndex = 0;
     }
 
     public void SetNext(Vector3 next, int nextIndex)

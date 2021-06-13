@@ -21,7 +21,7 @@ public abstract class GOPooler<T> : MonoBehaviour
         instance = this;
         
         pool = new Queue<GameObject>();
-        Expand(16);
+        Expand(256);
     }
 
     void Expand(int by)
@@ -38,7 +38,7 @@ public abstract class GOPooler<T> : MonoBehaviour
     {
         if (pool.Count == 0)
         {
-            Expand(16);
+            Expand(256);
         }
 
         var go = pool.Dequeue();
